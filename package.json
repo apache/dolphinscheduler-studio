@@ -13,7 +13,11 @@
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "lint": "eslint src --fix --ext .ts,.tsx,.vue",
-    "prettier": "prettier --write \"src/**/*.{vue,ts,tsx}\""
+    "prettier": "prettier --write \"src/**/*.{vue,ts,tsx}\" \"studio/**/*.{vue,ts,tsx}\"",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    ".ts,.tsx,.vue": ["eslint --fix"]
   },
   "dependencies": {
     "monaco-editor": "^0.34.0",
@@ -39,6 +43,8 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-vue": "^9.4.0",
+    "husky": "^8.0.0",
+    "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
     "sass": "^1.54.5",
     "typescript": "*",
