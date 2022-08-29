@@ -1,17 +1,17 @@
-import { defineComponent } from "vue";
+import { defineComponent } from 'vue'
 
 const Studio = defineComponent({
-  name: "studio",
+  name: 'studio',
   setup() {
-    return () => <div>Studio</div>;
-  },
-});
+    return () => <div>Studio</div>
+  }
+})
 
 const StudioProvider = defineComponent({
-  name: "studio-provider",
+  name: 'studio-provider',
   setup(props) {
-    return () => <Studio />;
-  },
-});
+    return () => <Studio />
+  }
+})
 
-export default StudioProvider;
+export default StudioProvider

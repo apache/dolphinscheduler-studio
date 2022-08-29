@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-import { defineComponent } from "vue";
+import { defineComponent } from 'vue'
 
 export const EditorPage = defineComponent({
-  name: "editor-page",
+  name: 'editor-page',
   setup() {
-    return () => <div>Editor - Page</div>;
-  },
-});
+    return () => <div>Editor - Page</div>
+  }
+})

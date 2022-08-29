@@ -1,8 +1,8 @@
-import { defineComponent } from "vue";
+import { defineComponent } from 'vue'
 
 export const LogPage = defineComponent({
-  name: "log-page",
+  name: 'log-page',
   setup() {
-    return () => <div>Log - Page</div>;
-  },
-});
+    return () => <div>Log - Page</div>
+  }
+})
