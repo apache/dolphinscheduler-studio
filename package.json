@@ -1,0 +1,50 @@
+{
+  "name": "dolphinscheduler-studio",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "main": "dist/dolphinscheduler-studio.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/*"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --fix --ext .ts,.tsx,.vue",
+    "prettier": "prettier --write \"src/**/*.{vue,ts,tsx}\""
+  },
+  "dependencies": {
+    "monaco-editor": "^0.34.0",
+    "naive-ui": "2.32.0",
+    "nprogress": "^0.2.0",
+    "pinia": "^2.0.21",
+    "pinia-plugin-persistedstate": "^2.1.1",
+    "vue": "^3.2.37",
+    "vue-i18n": "^9.2.2",
+    "vue-router": "^4.1.5"
+  },
+  "devDependencies": {
+    "@types/nprogress": "^0.2.0",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@vicons/antd": "^0.12.0",
+    "@vitejs/plugin-vue": "^3.0.3",
+    "@vitejs/plugin-vue-jsx": "^2.0.0",
+    "eslint": "^8.0.1",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-standard-with-typescript": "^22.0.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-n": "^15.0.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-vue": "^9.4.0",
+    "prettier": "^2.7.1",
+    "sass": "^1.54.5",
+    "typescript": "*",
+    "vite": "^3.0.7",
+    "vite-plugin-compression": "^0.5.1",
+    "vite-plugin-dts": "^1.4.1",
+    "vue-tsc": "^0.39.5"
+  }
+}
