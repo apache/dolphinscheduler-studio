@@ -15,23 +15,6 @@
  * limitations under the License.
  */
 
-import { defineComponent } from 'vue'
-import { NLayout } from 'naive-ui'
-import { StudioHeader, StudioSider, StudioContent } from './components'
-
-const Studio = defineComponent({
-  name: 'studio',
-  setup() {
-    return () => (
-      <NLayout>
-        <StudioHeader />
-        <NLayout hasSider>
-          <StudioSider />
-          <StudioContent />
-        </NLayout>
-      </NLayout>
-    )
-  }
-})
-
-export default Studio
+export { StudioHeader } from './studio-header'
+export { StudioSider } from './studio-sider'
+export { StudioContent } from './studio-content'

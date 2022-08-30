@@ -14,24 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import { defineComponent } from 'vue'
-import { NLayout } from 'naive-ui'
-import { StudioHeader, StudioSider, StudioContent } from './components'
+import { NLayoutHeader, NGradientText, NSpace } from 'naive-ui'
+import styles from './index.module.scss'
 
-const Studio = defineComponent({
-  name: 'studio',
+export const StudioHeader = defineComponent({
+  name: 'studio-header',
   setup() {
     return () => (
-      <NLayout>
-        <StudioHeader />
-        <NLayout hasSider>
-          <StudioSider />
-          <StudioContent />
-        </NLayout>
-      </NLayout>
+      <NLayoutHeader class={styles['studio-header']}>
+        <NSpace justify='space-between' align='center'>
+          <NGradientText type='primary' size={20}>
+            DolphinScheduler Studio
+          </NGradientText>
+        </NSpace>
+      </NLayoutHeader>
     )
   }
 })
-
-export default Studio

@@ -15,23 +15,9 @@
  * limitations under the License.
  */
 
-import { defineComponent } from 'vue'
-import { NLayout } from 'naive-ui'
-import { StudioHeader, StudioSider, StudioContent } from './components'
-
-const Studio = defineComponent({
-  name: 'studio',
-  setup() {
-    return () => (
-      <NLayout>
-        <StudioHeader />
-        <NLayout hasSider>
-          <StudioSider />
-          <StudioContent />
-        </NLayout>
-      </NLayout>
-    )
-  }
-})
-
-export default Studio
+.studio-sider {
+  padding: 10px;
+  box-shadow: 0px 0px 2px 2px var(--n-border-color);
+  min-height: calc(100vh - 40px);
+  justify-content: flex-start;
+}

@@ -14,24 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import { defineComponent } from 'vue'
-import { NLayout } from 'naive-ui'
-import { StudioHeader, StudioSider, StudioContent } from './components'
+import { NLayoutSider } from 'naive-ui'
+import styles from './index.module.scss'
 
-const Studio = defineComponent({
-  name: 'studio',
+export const StudioSider = defineComponent({
+  name: 'studio-sider',
   setup() {
     return () => (
-      <NLayout>
-        <StudioHeader />
-        <NLayout hasSider>
-          <StudioSider />
-          <StudioContent />
-        </NLayout>
-      </NLayout>
+      <NLayoutSider class={styles['studio-sider']}>Sider</NLayoutSider>
     )
   }
 })
-
-export default Studio
