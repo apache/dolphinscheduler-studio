@@ -13,11 +13,11 @@
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "lint": "eslint src --fix --ext .ts,.tsx,.vue",
-    "prettier": "prettier --write \"**/*.{vue,ts,tsx,sass}\"",
+    "prettier": "prettier --write \"**/*.{vue,ts,tsx,scss}\"",
     "prepare": "husky install"
   },
   "lint-staged": {
-    "*.{vue,ts,tsx,sass}": "prettier",
+    "*.{vue,ts,tsx,scss}": "prettier --write",
     "*.{.ts,.tsx,.vue}": "eslint --fix"
   },
   "dependencies": {

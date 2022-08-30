@@ -15,23 +15,34 @@
  * limitations under the License.
  */
 
-import { NLayout, NLayoutContent, NLayoutHeader } from 'naive-ui'
-import { defineComponent } from 'vue'
-import { Toolbar } from '../components/toolbar'
-import { Tabs } from '../components/tab'
+import { defineComponent, ref } from 'vue'
+import { NTabPane, NTabs } from 'naive-ui'
 
-export const EditorPage = defineComponent({
-  name: 'editor-page',
+export const Tabs = defineComponent({
+  name: 'tabs',
   setup() {
+    const fileRef = ref(1)
+
+    const handleClose = () => {}
+
+    const tabPanes = [1, 2, 3].map((item) => {
+      return (
+        <NTabPane name={item} key={item} tab={item.toString()}>
+          {{ item }}
+        </NTabPane>
+      )
+    })
+
     return () => (
-      <NLayout>
-        <NLayoutHeader>
-          <Toolbar />
-        </NLayoutHeader>
-        <NLayoutContent>
-          <Tabs />
-        </NLayoutContent>
-      </NLayout>
+      <NTabs
+        value={fileRef.value}
+        type='card'
+        closable
+        tabStyle={{ minWidth: '80px' }}
+        onClose={handleClose}
+      >
+        {tabPanes}
+      </NTabs>
     )
   }
 })
