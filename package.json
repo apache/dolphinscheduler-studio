@@ -21,17 +21,21 @@
     "*.{.ts,.tsx,.vue}": "eslint --fix"
   },
   "dependencies": {
+    "axios": "^0.27.2",
+    "lodash": "^4.17.21",
     "monaco-editor": "^0.34.0",
     "naive-ui": "2.32.0",
     "nprogress": "^0.2.0",
     "pinia": "^2.0.21",
     "pinia-plugin-persistedstate": "^2.1.1",
+    "qs": "^6.11.0",
     "vue": "^3.2.37",
     "vue-i18n": "^9.2.2",
     "vue-router": "^4.1.5"
   },
   "devDependencies": {
     "@types/nprogress": "^0.2.0",
+    "@types/qs": "^6.9.7",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@vicons/antd": "^0.12.0",
     "@vitejs/plugin-vue": "^3.0.3",

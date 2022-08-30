@@ -59,6 +59,7 @@ export const MonacoEditor = defineComponent({
       if (dom) {
         editor = monaco.editor.create(dom, {
           ...props.options,
+          value: props.defaultValue ?? props.value,
           automaticLayout: true,
           theme: 'vs'
         })

@@ -15,22 +15,52 @@
  * limitations under the License.
  */
 
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, PropType, onMounted } from 'vue'
 import { NTabPane, NTabs } from 'naive-ui'
+import { MonacoEditor } from '../monaco'
+import { getFileContent } from '@/service/modules/file'
+
+interface ITab {
+  id: number
+  name: string
+}
+
+const props = {
+  value: {
+    type: Array as PropType<ITab[]>,
+    default: []
+  }
+}
 
 export const Tabs = defineComponent({
   name: 'tabs',
-  setup() {
-    const fileRef = ref(1)
+  props,
+  setup(props) {
+    const fileRef = ref<string | number>()
+
+    const updateContent = (value: number) => {
+      fileRef.value = value
+      getFileContent(value)
+    }
 
     const handleClose = () => {}
 
-    const tabPanes = [1, 2, 3].map((item) => {
+    const handleChange = (value: number) => {
+      updateContent(value)
+    }
+
+    const tabPanes = props.value.map((item) => {
       return (
-        <NTabPane name={item} key={item} tab={item.toString()}>
-          {{ item }}
+        <NTabPane name={item.id} key={item.id} tab={item.name}>
+          <MonacoEditor defaultValue={item.name} />
         </NTabPane>
       )
+    })
+
+    onMounted(() => {
+      if (props.value.length) {
+        updateContent(props.value[0].id)
+      }
     })
 
     return () => (
@@ -39,7 +69,9 @@ export const Tabs = defineComponent({
         type='card'
         closable
         tabStyle={{ minWidth: '80px' }}
+        size='small'
         onClose={handleClose}
+        on-update:value={handleChange}
       >
         {tabPanes}
       </NTabs>

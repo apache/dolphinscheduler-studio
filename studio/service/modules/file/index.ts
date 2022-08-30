@@ -15,23 +15,11 @@
  * limitations under the License.
  */
 
-import { NLayout, NLayoutContent, NLayoutHeader } from 'naive-ui'
-import { defineComponent } from 'vue'
-import { Toolbar } from '../components/toolbar'
-import { Tabs } from '../components/tab'
+import { axios } from '@/service/service'
 
-export const EditorPage = defineComponent({
-  name: 'editor-page',
-  setup() {
-    return () => (
-      <NLayout>
-        <NLayoutHeader>
-          <Toolbar />
-        </NLayoutHeader>
-        <NLayoutContent>
-          <Tabs />
-        </NLayoutContent>
-      </NLayout>
-    )
-  }
-})
+export const getFileContent = (id: number) => {
+  return axios({
+    url: `files/${id}`,
+    method: 'get'
+  })
+}
