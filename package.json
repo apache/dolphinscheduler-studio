@@ -13,13 +13,12 @@
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "lint": "eslint src --fix --ext .ts,.tsx,.vue",
-    "prettier": "prettier --write \"src/**/*.{vue,ts,tsx}\" \"studio/**/*.{vue,ts,tsx}\"",
+    "prettier": "prettier --write \"**/*.{vue,ts,tsx,sass}\"",
     "prepare": "husky install"
   },
   "lint-staged": {
-    ".ts,.tsx,.vue": [
-      "eslint --fix"
-    ]
+    "*.{vue,ts,tsx,sass}": "prettier",
+    "*.{.ts,.tsx,.vue}": "eslint --fix"
   },
   "dependencies": {
     "monaco-editor": "^0.34.0",
