@@ -17,7 +17,9 @@
     "prepare": "husky install"
   },
   "lint-staged": {
-    ".ts,.tsx,.vue": ["eslint --fix"]
+    ".ts,.tsx,.vue": [
+      "eslint --fix"
+    ]
   },
   "dependencies": {
     "monaco-editor": "^0.34.0",

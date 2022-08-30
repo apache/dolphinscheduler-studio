@@ -15,11 +15,89 @@
  * limitations under the License.
  */
 
-import { defineComponent } from 'vue'
+import {
+  NButton,
+  NIcon,
+  NLayout,
+  NLayoutContent,
+  NLayoutHeader,
+  NTabPane,
+  NTabs
+} from 'naive-ui'
+import { ref, defineComponent } from 'vue'
+import {
+  FullscreenOutlined,
+  PlayCircleOutlined,
+  SaveOutlined,
+  ToTopOutlined
+} from '@vicons/antd'
+import styles from './styles.module.scss'
 
 export const EditorPage = defineComponent({
   name: 'editor-page',
   setup() {
-    return () => <div>Editor - Page</div>
+    const fileRef = ref(1)
+
+    const handleClose = () => {}
+
+    const tabPanes = [1, 2, 3].map((item) => {
+      return (
+        <NTabPane name={item} key={item} tab={item.toString()}>
+          {{ item }}
+        </NTabPane>
+      )
+    })
+
+    return () => (
+      <NLayout>
+        <NLayoutHeader>
+          <div class={styles.toolbar}>
+            <div class={styles.operate}>
+              <NButton text style={{ fontSize: '24px' }}>
+                <NIcon>
+                  <SaveOutlined />
+                </NIcon>
+              </NButton>
+            </div>
+            <div class={styles.operate}>
+              <NButton text style={{ fontSize: '24px' }}>
+                <NIcon>
+                  <PlayCircleOutlined />
+                </NIcon>
+              </NButton>
+            </div>
+            <div class={styles.operate}>
+              <NButton text style={{ fontSize: '24px' }}>
+                <NIcon>
+                  <FullscreenOutlined />
+                </NIcon>
+              </NButton>
+            </div>
+            <div class={styles.operate}>
+              <NButton text style={{ fontSize: '24px' }}>
+                <NIcon>
+                  <ToTopOutlined />
+                </NIcon>
+              </NButton>
+            </div>
+          </div>
+        </NLayoutHeader>
+        <NLayoutContent
+          style={{
+            height: '664px'
+          }}
+        >
+          <NTabs
+            value={fileRef.value}
+            type='card'
+            closable
+            tabStyle={{ minWidth: '80px' }}
+            onClose={handleClose}
+          >
+            {tabPanes}
+          </NTabs>
+        </NLayoutContent>
+      </NLayout>
+    )
   }
 })
