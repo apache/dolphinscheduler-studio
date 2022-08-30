@@ -15,25 +15,11 @@
  * limitations under the License.
  */
 
-import { NLayout, NLayoutContent, NLayoutHeader } from 'naive-ui'
-import { defineComponent } from 'vue'
-import { Toolbar } from '../components/toolbar'
-import { Tabs } from '../components/tab'
-import { MonacoEditor } from '../components/monaco'
+import type { MaybeArray } from 'naive-ui/es/_utils'
+import type monaco from 'monaco-editor'
 
-export const EditorPage = defineComponent({
-  name: 'editor-page',
-  setup() {
-    return () => (
-      <NLayout>
-        <NLayoutHeader>
-          <Toolbar />
-        </NLayoutHeader>
-        <NLayoutContent>
-          <Tabs />
-          <MonacoEditor />
-        </NLayoutContent>
-      </NLayout>
-    )
-  }
-})
+type OnUpdateValue = <T extends string>(value: T) => void
+type OnUpdateValueImpl = (value: string) => void
+
+export { MaybeArray, monaco }
+export type { OnUpdateValue, OnUpdateValueImpl }
