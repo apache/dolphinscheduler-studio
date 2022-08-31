@@ -14,12 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { defineComponent } from 'vue'
+import { defineComponent, provide, computed } from 'vue'
 import Studio from './studio'
+import studioProps from './studio-props'
+import { enUS } from './locales'
+import { configProviderInjectionKey } from './context'
 
 const StudioProvider = defineComponent({
   name: 'studio-provider',
+  props: studioProps,
   setup(props) {
+    provide(configProviderInjectionKey, {
+      localeRef: computed(() => props.locale || enUS)
+    })
     return () => <Studio />
   }
 })

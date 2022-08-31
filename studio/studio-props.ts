@@ -14,5 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { PropType } from 'vue'
+import type { Locale } from './locales'
 
-export default {}
+export default {
+  locale: {
+    type: Object as PropType<Locale>
+  }
+}

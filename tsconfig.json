@@ -15,9 +15,10 @@
     "noEmit": true,
     "declaration": true,
     "declarationDir": "dist",
+    "baseUrl": ".",
     "paths": {
       "@/*": ["studio/*"]
-    },
+    }
   },
   "include": [
     "src/**/*.ts",

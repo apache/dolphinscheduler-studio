@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
-export { default as studioRoutes } from './pages'
-export { default as Studio } from './studio-provider'
-export * from './locales'
+export { enUS } from './en_US'
+export { zhCN } from './zh_CN'
+
+export type { Locale } from './en_US'

@@ -15,6 +15,18 @@
  * limitations under the License.
  */
 
-export { default as studioRoutes } from './pages'
-export { default as Studio } from './studio-provider'
-export * from './locales'
+import { inject } from 'vue'
+import { enUS, Locale } from '../locales'
+import { configProviderInjectionKey } from '../context'
+
+export const useLocale = () => {
+  const { localeRef } = inject(configProviderInjectionKey, {
+    localeRef: {
+      value: enUS
+    }
+  })
+  const t = (key: keyof Locale): string => {
+    return localeRef.value[key] || key
+  }
+  return { t }
+}

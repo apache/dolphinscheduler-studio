@@ -16,14 +16,14 @@
  */
 
 import { defineComponent } from 'vue'
-import { Studio } from '../../studio'
+import { Studio, enUS } from '../../studio'
 
 export default defineComponent({
   name: 'studio-page',
   setup() {
     return () => (
       <>
-        <Studio />
+        <Studio locale={enUS} />
       </>
     )
   }

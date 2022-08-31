@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
-export { default as studioRoutes } from './pages'
-export { default as Studio } from './studio-provider'
-export * from './locales'
+export const enUS = {
+  test: 'Test'
+}
+
+export type Locale = typeof enUS
