@@ -51,15 +51,8 @@ export const ResizeHandler = defineComponent({
     }
     const classes = getClasses(placement)
 
-    let startX = 0
-    let startY = 0
-    let started = false
     const onMouseDown = (ev: MouseEvent) => {
-      // @ts-ignore
-      document.body.style['user-select'] = 'none'
-      startX = ev.clientX
-      startY = ev.clientY
-      started = true
+      document.body.style['user-select' as any] = 'none'
       document.addEventListener('mousemove', onMouseMove)
       document.addEventListener('mouseup', onMouseUp)
     }
@@ -70,12 +63,9 @@ export const ResizeHandler = defineComponent({
       })
     }
     const onMouseUp = (ev: MouseEvent) => {
-      startX = 0
-      startY = 0
       document.removeEventListener('mousemove', onMouseMove)
       document.removeEventListener('mouseup', onMouseUp)
-      // @ts-ignore
-      document.body.style['user-select'] = 'auto'
+      document.body.style['user-select' as any] = 'auto'
     }
 
     onMounted(() => {
