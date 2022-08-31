@@ -18,6 +18,8 @@
 .studio-sider {
   padding: 10px;
   box-shadow: 0px 0px 2px 2px var(--n-border-color);
-  min-height: calc(100vh - 40px);
+  height: calc(100vh - 40px);
   justify-content: flex-start;
+  position: relative;
+  z-index: 10;
 }

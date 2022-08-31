@@ -15,11 +15,15 @@
  * limitations under the License.
  */
 
-.studio-header {
-  height: 40px;
-  line-height: 40px;
-  padding: 0px 10px;
-  box-shadow: 0px 0px 2px 2px var(--n-border-color);
-  position: relative;
-  z-index: 30;
+import type { HandlerPlacement, Direction } from './types'
+
+export const getDirection = (placement: HandlerPlacement): Direction => {
+  const DIRECTION_PALCEMENT = {
+    left: 'x',
+    right: 'x',
+    top: 'y',
+    bottom: 'y'
+  } as { [key in HandlerPlacement]: Direction }
+
+  return DIRECTION_PALCEMENT[placement]
 }

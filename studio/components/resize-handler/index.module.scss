@@ -15,11 +15,34 @@
  * limitations under the License.
  */
 
-.studio-header {
-  height: 40px;
-  line-height: 40px;
-  padding: 0px 10px;
-  box-shadow: 0px 0px 2px 2px var(--n-border-color);
+.resizable-component {
   position: relative;
-  z-index: 30;
+}
+.resize-handler {
+  position: absolute;
+  z-index: 50;
+}
+.resize-handler-x {
+  width: 10px;
+  top: 0px;
+  height: 100%;
+  cursor: col-resize;
+}
+.resize-handler-left {
+  left: 0px;
+}
+.resize-handler-right {
+  right: 0px;
+}
+.resize-handler-y {
+  width: 100%;
+  left: 0px;
+  height: 10px;
+  cursor: row-resize;
+}
+.resize-handler-top {
+  top: 0px;
+}
+.resize-handler-bottom {
+  bottom: 0px;
 }

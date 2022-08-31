@@ -14,12 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+export enum Direction {
+  X = 'x',
+  Y = 'y'
+}
 
-.studio-header {
-  height: 40px;
-  line-height: 40px;
-  padding: 0px 10px;
-  box-shadow: 0px 0px 2px 2px var(--n-border-color);
-  position: relative;
-  z-index: 30;
+export enum HandlerPlacement {
+  L = 'left',
+  R = 'right',
+  T = 'top',
+  B = 'bottom'
+}
+
+export type ResizedOptions = {
+  [key in Direction]: number
 }

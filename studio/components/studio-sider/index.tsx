@@ -14,15 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { NLayoutSider } from 'naive-ui'
+import { ResizeHandler, ResizedOptions } from '../resize-handler'
 import styles from './index.module.scss'
 
 export const StudioSider = defineComponent({
   name: 'studio-sider',
   setup() {
+    const widthRef = ref(300)
     return () => (
-      <NLayoutSider class={styles['studio-sider']}>Sider</NLayoutSider>
+      <NLayoutSider class={styles['studio-sider']} width={widthRef.value}>
+        <ResizeHandler
+          onResized={(resized: ResizedOptions) => {
+            let width = resized.x
+            if (width < 100) width = 100
+            if (width > window.innerWidth * 0.5) width = window.innerWidth * 0.5
+            widthRef.value = width
+          }}
+        />
+      </NLayoutSider>
     )
   }
 })
