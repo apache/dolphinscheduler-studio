@@ -46,9 +46,10 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/stdio/api': {
+      '/studio/api': {
         target: loadEnv('development', './').VITE_APP_DEV_WEB_URL,
-        changeOrigin: true
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/studio\/api/, '')
       }
     }
   },

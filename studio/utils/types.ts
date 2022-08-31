@@ -15,9 +15,12 @@
  * limitations under the License.
  */
 
-import { axios } from '@/service/service'
-import type { IFileContent } from './types'
+type language = 'shell' | 'sql' | 'python'
 
-export const getFileContent = (id: number): Promise<IFileContent> => {
-  return axios.get(`files/${id}`)
+export interface IEditorLanguage {
+  (name: string): language | ''
+}
+
+export interface ILanguageMap {
+  [key: string]: language
 }

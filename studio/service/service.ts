@@ -32,7 +32,7 @@ const handleError = (res: AxiosResponse<any, any>) => {
 }
 
 const baseRequestConfig: AxiosRequestConfig = {
-  baseURL: '/',
+  baseURL: '/studio/api',
   timeout: 1500,
   transformRequest: (params) => {
     if (_.isPlainObject(params)) {

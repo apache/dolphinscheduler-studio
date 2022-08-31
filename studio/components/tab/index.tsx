@@ -19,6 +19,7 @@ import { defineComponent, ref, PropType, onMounted } from 'vue'
 import { NTabPane, NTabs } from 'naive-ui'
 import { MonacoEditor } from '../monaco'
 import { getFileContent } from '@/service/modules/file'
+import utils from '@/utils'
 
 interface ITab {
   id: number
@@ -37,10 +38,11 @@ export const Tabs = defineComponent({
   props,
   setup(props) {
     const fileRef = ref<string | number>()
+    const contentRef = ref<string>()
 
     const updateContent = (value: number) => {
       fileRef.value = value
-      getFileContent(value)
+      getFileContent(value).then((res) => (contentRef.value = res.content))
     }
 
     const handleClose = () => {}
@@ -50,9 +52,10 @@ export const Tabs = defineComponent({
     }
 
     const tabPanes = props.value.map((item) => {
+      const language = utils.getLanguageByName(item.name)
       return (
         <NTabPane name={item.id} key={item.id} tab={item.name}>
-          <MonacoEditor defaultValue={item.name} />
+          <MonacoEditor value={contentRef.value} options={{ language }} />
         </NTabPane>
       )
     })

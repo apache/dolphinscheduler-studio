@@ -15,9 +15,10 @@
  * limitations under the License.
  */
 
-import { axios } from '@/service/service'
-import type { IFileContent } from './types'
+import { getLanguageByName } from './editor'
 
-export const getFileContent = (id: number): Promise<IFileContent> => {
-  return axios.get(`files/${id}`)
+const utils = {
+  getLanguageByName
 }
+
+export default utils
