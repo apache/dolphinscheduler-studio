@@ -15,17 +15,18 @@
  * limitations under the License.
  */
 
-import { axios } from '@/service/service'
-import type { IFileContent } from './types'
-
-export const getFileContent = (id: number): Promise<IFileContent> => {
-  return axios.get(`files/${id}`)
+interface IFile {
+  id: number
+  name: string
+  content: string
+  oldContent?: string
+  saved: boolean
 }
 
-export const saveFile = (id: number, data: IFileContent) => {
-  return axios.post(`files/${id}/save`, data)
+interface IFileState {
+  files: IFile[]
+  fileNames: string[]
+  currentFile: string
 }
 
-export const runFile = (id: number) => {
-  return axios.post(`files/${id}/run`)
-}
+export type { IFile, IFileState }

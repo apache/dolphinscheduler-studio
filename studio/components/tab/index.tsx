@@ -15,60 +15,48 @@
  * limitations under the License.
  */
 
-import { defineComponent, ref, PropType, onMounted } from 'vue'
+import { defineComponent, watch } from 'vue'
 import { NTabPane, NTabs } from 'naive-ui'
 import { MonacoEditor } from '../monaco'
-import { getFileContent } from '@/service/modules/file'
 import utils from '@/utils'
-
-interface ITab {
-  id: number
-  name: string
-}
-
-const props = {
-  value: {
-    type: Array as PropType<ITab[]>,
-    default: []
-  }
-}
+import { useFileStore } from '@/store/file'
 
 export const Tabs = defineComponent({
   name: 'tabs',
-  props,
-  setup(props) {
-    const fileRef = ref<string | number>()
-    const contentRef = ref<string>()
+  setup() {
+    const fileStore = useFileStore()
 
-    const updateContent = (value: number) => {
-      fileRef.value = value
-      getFileContent(value).then((res) => (contentRef.value = res.content))
+    const updateContent = (value: string) => {
+      fileStore.changeTab(value)
     }
 
-    const handleClose = () => {}
+    const handleClose = (fileName: string) => {
+      fileStore.closeFile(fileName)
+    }
 
-    const handleChange = (value: number) => {
+    const handleChange = (value: string) => {
       updateContent(value)
     }
 
-    const tabPanes = props.value.map((item) => {
-      const language = utils.getLanguageByName(item.name)
-      return (
-        <NTabPane name={item.id} key={item.id} tab={item.name}>
-          <MonacoEditor value={contentRef.value} options={{ language }} />
-        </NTabPane>
-      )
-    })
+    const createTabPane = () => {
+      return fileStore.getOpenFiles.map((file) => {
+        const language = utils.getLanguageByName(file.name)
+        return (
+          <NTabPane name={file.name} key={file.name} tab={file.name}>
+            <MonacoEditor v-model:value={file.content} options={{ language }} />
+          </NTabPane>
+        )
+      })
+    }
 
-    onMounted(() => {
-      if (props.value.length) {
-        updateContent(props.value[0].id)
-      }
-    })
+    watch(
+      () => fileStore.getCurrentFile,
+      () => createTabPane()
+    )
 
     return () => (
       <NTabs
-        value={fileRef.value}
+        value={fileStore.currentFile}
         type='card'
         closable
         tabStyle={{ minWidth: '80px' }}
@@ -76,7 +64,7 @@ export const Tabs = defineComponent({
         onClose={handleClose}
         on-update:value={handleChange}
       >
-        {tabPanes}
+        {createTabPane()}
       </NTabs>
     )
   }

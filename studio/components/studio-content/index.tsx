@@ -30,12 +30,7 @@ export const StudioContent = defineComponent({
             <Toolbar />
           </NLayoutHeader>
           <NLayoutContent>
-            <Tabs
-              value={[
-                { id: 1, name: 'name' },
-                { id: 2, name: 'name' }
-              ]}
-            />
+            <Tabs />
           </NLayoutContent>
         </NLayout>
       </NLayoutContent>

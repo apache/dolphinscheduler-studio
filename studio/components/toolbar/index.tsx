@@ -24,21 +24,51 @@ import {
   ToTopOutlined
 } from '@vicons/antd'
 import styles from './index.module.scss'
+import { useFileStore } from '@/store/file'
+import { runFile, saveFile } from '@/service/modules/file'
 
 export const Toolbar = defineComponent({
   name: 'toolbar',
   setup() {
+    const fileStore = useFileStore()
+
+    const handleSave = () => {
+      const file = fileStore.getOpenFiles.filter(
+        (file) => file.name === fileStore.getCurrentFile
+      )[0]
+      saveFile(file.id, { content: file.content })
+    }
+
+    const handleRun = () => {
+      const file = fileStore.getOpenFiles.filter(
+        (file) => file.name === fileStore.getCurrentFile
+      )[0]
+
+      runFile(file.id)
+    }
+
+    const openFile = () => {
+      const id = fileStore.getOpenFiles.length + 2
+      const name = `name-${id}.py`
+      fileStore.openFile({
+        id,
+        name,
+        content: '',
+        saved: true
+      })
+    }
+
     return () => (
       <div class={styles.toolbar}>
         <div class={styles.operate}>
-          <NButton text style={{ fontSize: '24px' }}>
+          <NButton text style={{ fontSize: '24px' }} onClick={handleSave}>
             <NIcon>
               <SaveOutlined />
             </NIcon>
           </NButton>
         </div>
         <div class={styles.operate}>
-          <NButton text style={{ fontSize: '24px' }}>
+          <NButton text style={{ fontSize: '24px' }} onClick={handleRun}>
             <NIcon>
               <PlayCircleOutlined />
             </NIcon>
@@ -52,7 +82,7 @@ export const Toolbar = defineComponent({
           </NButton>
         </div>
         <div class={styles.operate}>
-          <NButton text style={{ fontSize: '24px' }}>
+          <NButton text style={{ fontSize: '24px' }} onClick={openFile}>
             <NIcon>
               <ToTopOutlined />
             </NIcon>
