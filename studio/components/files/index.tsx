@@ -15,8 +15,36 @@
  * limitations under the License.
  */
 
-export { StudioHeader } from './studio-header'
-export { StudioSider } from './studio-sider'
-export { StudioContent } from './studio-content'
-export { SearchBar } from './search-bar'
-export { Files } from './files'
+import { defineComponent, PropType, Ref } from 'vue'
+import { NTree } from 'naive-ui'
+import styles from './index.module.scss'
+import type { IFileRecord } from '@/types/file'
+
+const props = {
+  data: {
+    type: Array as PropType<IFileRecord[]>,
+    default: []
+  }
+}
+
+export const Files = defineComponent({
+  name: 'files',
+  props,
+  emits: ['select'],
+  setup(props, { emit }) {
+    const onSelect = (keys: string[]) => {
+      keys[0] && emit('select', keys[0])
+    }
+    return () => (
+      <NTree
+        block-line
+        selectable
+        data={props.data}
+        on-update:selected-keys={onSelect}
+        class={styles['files']}
+        defaultExpandAll
+        expand-on-click
+      ></NTree>
+    )
+  }
+})

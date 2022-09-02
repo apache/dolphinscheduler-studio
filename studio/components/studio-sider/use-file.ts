@@ -14,9 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { reactive } from 'vue'
 
-export { StudioHeader } from './studio-header'
-export { StudioSider } from './studio-sider'
-export { StudioContent } from './studio-content'
-export { SearchBar } from './search-bar'
-export { Files } from './files'
+export const useFile = () => {
+  const state = reactive({ files: [] })
+
+  const onCreateFile = () => {}
+
+  const onCreateFolder = () => {}
+
+  const onSelectFile = (key: number) => {}
+
+  return { state, onCreateFile, onCreateFolder, onSelectFile }
+}

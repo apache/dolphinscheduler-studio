@@ -16,10 +16,14 @@
  */
 
 .studio-sider {
-  padding: 10px;
   box-shadow: 0px 0px 2px 2px var(--n-border-color);
   height: calc(100vh - 40px);
   justify-content: flex-start;
   position: relative;
   z-index: 10;
+}
+.studio-sider-content {
+  padding: 10px;
+  height: 100%;
+  box-sizing: border-box;
 }
