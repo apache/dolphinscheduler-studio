@@ -20,6 +20,7 @@ import { NTabPane, NTabs } from 'naive-ui'
 import { MonacoEditor } from '../monaco'
 import utils from '@/utils'
 import { useFileStore } from '@/store/file'
+import { Log } from '../log'
 
 export const Tabs = defineComponent({
   name: 'tabs',
@@ -44,6 +45,7 @@ export const Tabs = defineComponent({
         return (
           <NTabPane name={file.name} key={file.name} tab={file.name}>
             <MonacoEditor v-model:value={file.content} options={{ language }} />
+            <Log />
           </NTabPane>
         )
       })
@@ -59,7 +61,7 @@ export const Tabs = defineComponent({
         value={fileStore.currentFile}
         type='card'
         closable
-        tabStyle={{ minWidth: '80px' }}
+        tabStyle={{ minWidth: '80px', height: '100%' }}
         size='small'
         onClose={handleClose}
         on-update:value={handleChange}

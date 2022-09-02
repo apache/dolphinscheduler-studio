@@ -18,10 +18,10 @@
 import { defineComponent } from 'vue'
 import { NButton, NIcon } from 'naive-ui'
 import {
+  FileAddOutlined,
   FullscreenOutlined,
   PlayCircleOutlined,
-  SaveOutlined,
-  ToTopOutlined
+  SaveOutlined
 } from '@vicons/antd'
 import styles from './index.module.scss'
 import { useFileStore } from '@/store/file'
@@ -61,6 +61,13 @@ export const Toolbar = defineComponent({
     return () => (
       <div class={styles.toolbar}>
         <div class={styles.operate}>
+          <NButton text style={{ fontSize: '24px' }} onClick={openFile}>
+            <NIcon>
+              <FileAddOutlined />
+            </NIcon>
+          </NButton>
+        </div>
+        <div class={styles.operate}>
           <NButton text style={{ fontSize: '24px' }} onClick={handleSave}>
             <NIcon>
               <SaveOutlined />
@@ -78,13 +85,6 @@ export const Toolbar = defineComponent({
           <NButton text style={{ fontSize: '24px' }}>
             <NIcon>
               <FullscreenOutlined />
-            </NIcon>
-          </NButton>
-        </div>
-        <div class={styles.operate}>
-          <NButton text style={{ fontSize: '24px' }} onClick={openFile}>
-            <NIcon>
-              <ToTopOutlined />
             </NIcon>
           </NButton>
         </div>

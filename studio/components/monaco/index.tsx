@@ -19,6 +19,7 @@ import { defineComponent, onMounted, ref, PropType } from 'vue'
 import * as monaco from 'monaco-editor'
 import { useFormItem } from 'naive-ui/es/_mixins'
 import { call } from 'naive-ui/es/_utils'
+import { ResizeHandler, ResizedOptions } from '../resize-handler'
 import type {
   MaybeArray,
   OnUpdateValue,
@@ -50,6 +51,7 @@ export const MonacoEditor = defineComponent({
   props,
   emits: ['change', 'focus', 'blur'],
   setup(props, ctx) {
+    const heightRef = ref(450)
     const editorRef = ref()
     let editor = null as monaco.editor.IStandaloneCodeEditor | null
     const formItem = useFormItem({})
@@ -87,14 +89,26 @@ export const MonacoEditor = defineComponent({
 
     onMounted(() => initMonacoEditor())
     return () => (
-      <div
-        ref={editorRef}
-        style={{
-          height: '300px',
-          width: '100%',
-          border: '1px solid #eee'
-        }}
-      />
+      <>
+        <div
+          ref={editorRef}
+          style={{
+            height: `${heightRef.value}px`,
+            width: '100%',
+            border: '1px solid #eee'
+          }}
+        />
+        <ResizeHandler
+          placement='y'
+          onResized={(resized: ResizedOptions) => {
+            let height = resized.y
+            if (height < 100) height = 100
+            if (height > window.innerHeight * 0.5)
+              height = window.innerHeight * 0.5
+            heightRef.value = height
+          }}
+        />
+      </>
     )
   }
 })

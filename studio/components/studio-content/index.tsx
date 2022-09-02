@@ -14,8 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { defineComponent } from 'vue'
-import { NLayout, NLayoutContent, NLayoutHeader } from 'naive-ui'
+import { NLayoutContent } from 'naive-ui'
 import { Toolbar } from '../toolbar'
 import { Tabs } from '../tab'
 import styles from './index.module.scss'
@@ -25,14 +26,12 @@ export const StudioContent = defineComponent({
   setup() {
     return () => (
       <NLayoutContent class={styles['studio-content']}>
-        <NLayout>
-          <NLayoutHeader>
-            <Toolbar />
-          </NLayoutHeader>
-          <NLayoutContent>
+        <div class={styles['editor']}>
+          <Toolbar />
+          <div class={styles['tab']}>
             <Tabs />
-          </NLayoutContent>
-        </NLayout>
+          </div>
+        </div>
       </NLayoutContent>
     )
   }

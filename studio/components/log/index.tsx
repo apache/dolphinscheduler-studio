@@ -15,12 +15,21 @@
  * limitations under the License.
  */
 
-.toolbar {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  .operate {
-    padding: 5px 5px;
+import { NTabs, NTabPane, NLog } from 'naive-ui'
+import { defineComponent, ref } from 'vue'
+
+export const Log = defineComponent({
+  name: 'log',
+  setup() {
+    const logRef = ref('')
+    return () => {
+      return (
+        <NTabs type='card' closable size='small'>
+          <NTabPane name='运行日志'>
+            <NLog log={logRef.value} />
+          </NTabPane>
+        </NTabs>
+      )
+    }
   }
-  height: 40px;
-}
+})

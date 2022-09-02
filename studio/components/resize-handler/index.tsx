@@ -52,7 +52,7 @@ export const ResizeHandler = defineComponent({
     const classes = getClasses(placement)
 
     const onMouseDown = (ev: MouseEvent) => {
-      document.body.style['user-select' as any] = 'none'
+      document.body.style[`user-select-${placement}` as any] = 'none'
       document.addEventListener('mousemove', onMouseMove)
       document.addEventListener('mouseup', onMouseUp)
     }
@@ -65,7 +65,7 @@ export const ResizeHandler = defineComponent({
     const onMouseUp = (ev: MouseEvent) => {
       document.removeEventListener('mousemove', onMouseMove)
       document.removeEventListener('mouseup', onMouseUp)
-      document.body.style['user-select' as any] = 'auto'
+      document.body.style[`user-select-${placement}` as any] = 'auto'
     }
 
     onMounted(() => {

@@ -18,3 +18,12 @@
 .studio-content {
   padding: 10px;
 }
+
+.editor {
+  display: flex;
+  flex-direction: column;
+}
+
+.tab {
+  flex: 1;
+}
