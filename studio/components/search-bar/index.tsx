@@ -16,20 +16,26 @@
  */
 
 import { defineComponent, h } from 'vue'
-import { NSpace, NInput, NIcon, NButton } from 'naive-ui'
+import { NSpace, NInput, NIcon, NButton, NDropdown } from 'naive-ui'
 import {
   SearchOutlined,
   FileAddOutlined,
   FolderAddOutlined
 } from '@vicons/antd'
+import { FILE_TYPES } from '@/constants/file'
 import styles from './index.module.scss'
+import type { FileType } from '@/types/file'
 
 export const SearchBar = defineComponent({
   name: 'search-bar',
   emits: ['fileClick', 'folderClick'],
   setup(props, { emit }) {
-    const onFileClick = () => {
-      emit('fileClick')
+    const typesOptions = FILE_TYPES.map((type) => ({
+      key: type,
+      label: type
+    }))
+    const onFileClick = (type: FileType) => {
+      emit('fileClick', type)
     }
     const onFolderClick = () => {
       emit('folderClick')
@@ -42,9 +48,15 @@ export const SearchBar = defineComponent({
             prefix: () => h(NIcon, { component: SearchOutlined })
           }}
         </NInput>
-        <NButton tertiary size='small' onClick={onFileClick}>
-          {{ icon: () => h(NIcon, { component: FileAddOutlined }) }}
-        </NButton>
+        <NDropdown
+          options={typesOptions}
+          trigger='click'
+          onSelect={onFileClick}
+        >
+          <NButton tertiary size='small'>
+            {{ icon: () => h(NIcon, { component: FileAddOutlined }) }}
+          </NButton>
+        </NDropdown>
         <NButton tertiary size='small' onClick={onFolderClick}>
           {{ icon: () => h(NIcon, { component: FolderAddOutlined }) }}
         </NButton>
