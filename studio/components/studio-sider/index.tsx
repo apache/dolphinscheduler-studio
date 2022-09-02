@@ -15,16 +15,31 @@
  * limitations under the License.
  */
 import { defineComponent, ref } from 'vue'
-import { NLayoutSider } from 'naive-ui'
+import { NLayoutSider, NSpace } from 'naive-ui'
 import { ResizeHandler, ResizedOptions } from '../resize-handler'
+import { SearchBar, Files } from '@/components'
+import { useFile } from './use-file'
 import styles from './index.module.scss'
 
 export const StudioSider = defineComponent({
   name: 'studio-sider',
   setup() {
     const widthRef = ref(300)
+    const { state, onCreateFile, onCreateFolder, onSelectFile } = useFile()
+
     return () => (
       <NLayoutSider class={styles['studio-sider']} width={widthRef.value}>
+        <NSpace
+          vertical
+          class={styles['studio-sider-content']}
+          wrapItem={false}
+        >
+          <SearchBar
+            onFileClick={onCreateFile}
+            onFolderClick={onCreateFolder}
+          />
+          <Files data={state.files} onSelect={onSelectFile} />
+        </NSpace>
         <ResizeHandler
           onResized={(resized: ResizedOptions) => {
             let width = resized.x

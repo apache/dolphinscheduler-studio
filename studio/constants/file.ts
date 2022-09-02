@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 
-export { StudioHeader } from './studio-header'
-export { StudioSider } from './studio-sider'
-export { StudioContent } from './studio-content'
-export { SearchBar } from './search-bar'
-export { Files } from './files'
+import { FileType, FileTypeSuffix } from '../types/file'
+
+export const FILE_TYPES = Object.values(FileType)
+export const FILE_TYPES_SUFFIX = FileTypeSuffix

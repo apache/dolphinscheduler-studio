@@ -14,9 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { TreeOption } from 'naive-ui/es/tree'
 
-export { StudioHeader } from './studio-header'
-export { StudioSider } from './studio-sider'
-export { StudioContent } from './studio-content'
-export { SearchBar } from './search-bar'
-export { Files } from './files'
+export enum FileType {
+  SHELL = 'shell',
+  PYTHON = 'python',
+  SQL = 'sql'
+}
+
+export const FileTypeSuffix = {
+  [FileType.SHELL]: 'sh',
+  [FileType.PYTHON]: 'py',
+  [FileType.SQL]: 'sql'
+}
+
+export interface IFileRecord extends TreeOption {
+  isCreate?: boolean
+  type?: FileType
+  key: number
+  children: IFileRecord[]
+  pid: number
+}
+
+export { TreeOption }
