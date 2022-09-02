@@ -14,17 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { reactive } from 'vue'
-import type { FileType } from './types'
 
-export const useFile = () => {
-  const state = reactive({ files: [] })
+import type { FileType, IFileRecord } from '@/types/file'
 
-  const onCreateFile = (type: FileType) => {}
-
-  const onCreateFolder = () => {}
-
-  const onSelectFile = (key: number) => {}
-
-  return { state, onCreateFile, onCreateFolder, onSelectFile }
+export interface IFileState {
+  currentKey: number
+  files: IFileRecord[]
+  isCreating: boolean
 }
+export { FileType, IFileRecord }
