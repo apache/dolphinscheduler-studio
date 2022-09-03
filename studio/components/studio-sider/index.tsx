@@ -25,7 +25,10 @@ export const StudioSider = defineComponent({
   name: 'studio-sider',
   setup() {
     const widthRef = ref(300)
-    const { state, onCreateFile, onCreateFolder, onSelectFile } = useFile()
+    const inputRef = ref()
+    const fileRef = ref()
+    const { state, onCreateFile, onCreateFolder, onSelectFile, onInputBlur } =
+      useFile()
 
     return () => (
       <NLayoutSider class={styles['studio-sider']} width={widthRef.value}>
@@ -38,7 +41,14 @@ export const StudioSider = defineComponent({
             onFileClick={onCreateFile}
             onFolderClick={onCreateFolder}
           />
-          <Files data={state.files} onSelect={onSelectFile} />
+          <Files
+            data={state.files}
+            onSelect={onSelectFile}
+            onInputBlur={onInputBlur}
+            inputRef={inputRef}
+            selected-keys={[state.currentKey]}
+            ref={fileRef}
+          />
         </NSpace>
         <ResizeHandler
           onResized={(resized: ResizedOptions) => {

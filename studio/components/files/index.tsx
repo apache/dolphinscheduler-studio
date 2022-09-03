@@ -15,25 +15,56 @@
  * limitations under the License.
  */
 
-import { defineComponent, PropType, Ref } from 'vue'
-import { NTree } from 'naive-ui'
+import { defineComponent, PropType, h, VNodeChild, Ref, ref } from 'vue'
+import { NTree, NInput } from 'naive-ui'
+import { FILE_TYPES_SUFFIX } from '@/constants/file'
 import styles from './index.module.scss'
-import type { IFileRecord } from '@/types/file'
+import type { IFileRecord, TreeOption } from '@/types/file'
 
 const props = {
   data: {
     type: Array as PropType<IFileRecord[]>,
     default: []
+  },
+  inputRef: {
+    type: Object as PropType<Ref>
   }
 }
 
 export const Files = defineComponent({
   name: 'files',
   props,
-  emits: ['select'],
-  setup(props, { emit }) {
+  emits: ['select', 'inputBlur'],
+  setup(props, { emit, expose }) {
+    const keyRef = ref()
+
     const onSelect = (keys: string[]) => {
       keys[0] && emit('select', keys[0])
+    }
+    const onBlur = (ev: FocusEvent) => {
+      emit('inputBlur', (ev.target as HTMLInputElement)?.value)
+    }
+
+    const refresh = () => {
+      keyRef.value = Date.now()
+    }
+
+    expose({ refresh })
+
+    const renderLabel = (info: { option: TreeOption }): VNodeChild => {
+      const { isCreate, label, type } = info.option as IFileRecord
+      return !isCreate
+        ? `${label}${type ? '.' + FILE_TYPES_SUFFIX[type] : ''}`
+        : h(
+            NInput,
+            {
+              size: 'tiny',
+              autofocus: true,
+              onBlur: onBlur,
+              ref: props.inputRef
+            },
+            { suffix: () => (type ? '.' + FILE_TYPES_SUFFIX[type] : '') }
+          )
     }
     return () => (
       <NTree
@@ -42,6 +73,8 @@ export const Files = defineComponent({
         data={props.data}
         on-update:selected-keys={onSelect}
         class={styles['files']}
+        renderLabel={renderLabel}
+        key={keyRef.value}
         defaultExpandAll
         expand-on-click
       ></NTree>

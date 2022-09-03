@@ -15,16 +15,31 @@
  * limitations under the License.
  */
 import { reactive } from 'vue'
-import type { FileType } from './types'
+import type { IFileState, FileType } from './types'
 
 export const useFile = () => {
-  const state = reactive({ files: [] })
+  const state = reactive({
+    currentKey: 0,
+    files: [],
+    isCreating: false
+  } as IFileState)
 
-  const onCreateFile = (type: FileType) => {}
+  const create = async (isFile: boolean, type?: FileType) => {
+    if (state.isCreating) return
+    state.isCreating = true
+  }
 
-  const onCreateFolder = () => {}
+  const onCreateFile = (type: FileType) => void create(true, type)
 
-  const onSelectFile = (key: number) => {}
+  const onCreateFolder = () => void create(false)
 
-  return { state, onCreateFile, onCreateFolder, onSelectFile }
+  const onSelectFile = (key: number) => {
+    state.currentKey = key
+  }
+
+  const onInputBlur = (value: string) => {
+    state.isCreating = false
+  }
+
+  return { state, onCreateFile, onCreateFolder, onSelectFile, onInputBlur }
 }
