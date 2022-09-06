@@ -28,7 +28,7 @@ export const StudioSider = defineComponent({
     const inputRef = ref()
     const fileRef = ref()
     const { state, onCreateFile, onCreateFolder, onSelectFile, onInputBlur } =
-      useFile()
+      useFile(inputRef, fileRef)
 
     return () => (
       <NLayoutSider class={styles['studio-sider']} width={widthRef.value}>
