@@ -16,7 +16,7 @@
  */
 
 import { axios } from '@/service/service'
-import type { IFileContent } from './types'
+import type { IFileContent, IFileRecord, FileType } from './types'
 
 export const getFileContent = (id: number): Promise<IFileContent> => {
   return axios.get(`files/${id}`)
@@ -29,3 +29,12 @@ export const saveFile = (id: number, data: IFileContent) => {
 export const runFile = (id: number) => {
   return axios.post(`files/${id}/run`)
 }
+
+export const getFiles = (): Promise<IFileRecord[]> => axios.get('/files')
+
+export const addFile = (
+  pid: number,
+  data: { type: FileType | ''; name: string }
+): Promise<{ id: number }> => axios.put(`files/${pid}/add`, data)
+
+export const deleteFile = (id: number) => axios.delete(`/files/${id}`)

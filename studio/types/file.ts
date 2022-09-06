@@ -29,11 +29,12 @@ export const FileTypeSuffix = {
 }
 
 export interface IFileRecord extends TreeOption {
-  isCreate?: boolean
+  isEditing?: boolean
   type?: FileType
-  key: number
+  id: number
   children: IFileRecord[]
   pid: number
+  name: string
 }
 
 export { TreeOption }

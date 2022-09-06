@@ -15,6 +15,10 @@
  * limitations under the License.
  */
 import { reactive, Ref, nextTick } from 'vue'
+import { useMessage } from 'naive-ui'
+import { addFile } from '@/service/modules/file'
+import { useLocale } from '@/hooks'
+import { sameNameValidator } from './helper'
 import type { IFileState, FileType, IFileRecord } from './types'
 
 export const useFile = (inputRef: Ref, fileRef: Ref) => {
@@ -23,6 +27,9 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
     files: [],
     isCreating: false
   } as IFileState)
+
+  const message = useMessage()
+  const { t } = useLocale()
 
   const filesCached = {} as { [key: number]: IFileRecord }
 
@@ -33,7 +40,7 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
   const getCurrentFolderKey = (): number => {
     if (state.currentKey === 0) return 0
     const currentRecord = filesCached[state.currentKey]
-    return currentRecord.type ? currentRecord.pid : currentRecord.key
+    return currentRecord.type ? currentRecord.pid : currentRecord.id
   }
 
   const create = async (isFile: boolean, type?: FileType) => {
@@ -41,15 +48,15 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
     state.isCreating = true
     const currentFolderKey = getCurrentFolderKey()
     const record = {
-      isCreate: true,
-      key: Date.now(),
-      label: '',
+      isEditing: true,
+      id: Date.now(),
+      name: '',
       pid: currentFolderKey
     } as IFileRecord
 
     isFile ? (record.type = type) : (record.children = [])
 
-    filesCached[record.key] = record
+    filesCached[record.id] = record
 
     if (currentFolderKey === 0) {
       state.files.unshift(record)
@@ -57,11 +64,26 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
       filesCached[currentFolderKey].children.unshift(record)
     }
 
-    state.currentKey = record.key
+    state.currentKey = record.id
 
     freshFiles()
     await nextTick()
     inputRef.value?.focus()
+  }
+
+  const save = async () => {
+    const currentRecord = filesCached[state.currentKey]
+    try {
+      const { id } = await addFile(currentRecord.pid, {
+        type: currentRecord.type || '',
+        name: currentRecord.name
+      })
+      message.success(t('saved_successfully'))
+      currentRecord.id = id
+      return true
+    } catch (err) {
+      return false
+    }
   }
 
   const onCreateFile = (type: FileType) => void create(true, type)
@@ -72,7 +94,7 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
     state.currentKey = key
   }
 
-  const onInputBlur = (value: string) => {
+  const onInputBlur = async (value: string) => {
     state.isCreating = false
     if (!value) {
       const currentFolderKey = getCurrentFolderKey()
@@ -88,9 +110,23 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
       freshFiles()
       return
     }
-    filesCached[state.currentKey].isCreate = false
-    filesCached[state.currentKey].label = value
-    freshFiles()
+
+    const pid = filesCached[state.currentKey].pid
+    const isSame = sameNameValidator(
+      value,
+      pid ? filesCached[pid].children : state.files
+    )
+    if (isSame) {
+      message.error(t('same_name_tips'))
+      return
+    }
+
+    const result = await save()
+    if (result) {
+      filesCached[state.currentKey].isEditing = false
+      filesCached[state.currentKey].name = value
+      freshFiles()
+    }
   }
 
   return { state, onCreateFile, onCreateFolder, onSelectFile, onInputBlur }
