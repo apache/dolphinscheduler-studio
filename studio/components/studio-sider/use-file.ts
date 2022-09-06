@@ -24,7 +24,7 @@ import type { IFileState, FileType, IFileRecord } from './types'
 export const useFile = (inputRef: Ref, fileRef: Ref) => {
   const state = reactive({
     currentKey: 0,
-    files: [],
+    files: [{ type: '', id: 1, name: '123', pid: 0 }],
     isCreating: false
   } as IFileState)
 
@@ -43,7 +43,7 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
     return currentRecord.type ? currentRecord.pid : currentRecord.id
   }
 
-  const create = async (isFile: boolean, type?: FileType) => {
+  const create = async (isFile: boolean, type: FileType | '') => {
     if (state.isCreating) return
     state.isCreating = true
     const currentFolderKey = getCurrentFolderKey()
@@ -54,14 +54,15 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
       pid: currentFolderKey
     } as IFileRecord
 
-    isFile ? (record.type = type) : (record.children = [])
+    record.type = type
+    !isFile && (record.children = [])
 
     filesCached[record.id] = record
 
     if (currentFolderKey === 0) {
       state.files.unshift(record)
     } else {
-      filesCached[currentFolderKey].children.unshift(record)
+      filesCached[currentFolderKey].children?.unshift(record)
     }
 
     state.currentKey = record.id
@@ -88,7 +89,7 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
 
   const onCreateFile = (type: FileType) => void create(true, type)
 
-  const onCreateFolder = () => void create(false)
+  const onCreateFolder = () => void create(false, '')
 
   const onSelectFile = (key: number) => {
     state.currentKey = key
@@ -100,7 +101,7 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
       const currentFolderKey = getCurrentFolderKey()
 
       currentFolderKey
-        ? filesCached[currentFolderKey].children.shift()
+        ? filesCached[currentFolderKey].children?.shift()
         : state.files.shift()
 
       delete filesCached[state.currentKey]
@@ -114,7 +115,7 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
     const pid = filesCached[state.currentKey].pid
     const isSame = sameNameValidator(
       value,
-      pid ? filesCached[pid].children : state.files
+      pid ? filesCached[pid].children || [] : state.files
     )
     if (isSame) {
       message.error(t('same_name_tips'))
