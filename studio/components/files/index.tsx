@@ -52,8 +52,8 @@ export const Files = defineComponent({
     expose({ refresh })
 
     const renderLabel = (info: { option: TreeOption }): VNodeChild => {
-      const { isCreate, label, type } = info.option as IFileRecord
-      return !isCreate
+      const { isEditing, label, type } = info.option as IFileRecord
+      return !isEditing
         ? `${label}${type ? '.' + FILE_TYPES_SUFFIX[type] : ''}`
         : h(
             NInput,
@@ -63,7 +63,9 @@ export const Files = defineComponent({
               onBlur: onBlur,
               ref: props.inputRef
             },
-            { suffix: () => (type ? '.' + FILE_TYPES_SUFFIX[type] : '') }
+            {
+              suffix: () => (type ? '.' + FILE_TYPES_SUFFIX[type] : '')
+            }
           )
     }
     return () => (
@@ -77,6 +79,8 @@ export const Files = defineComponent({
         key={keyRef.value}
         defaultExpandAll
         expand-on-click
+        labelField='name'
+        keyField='id'
       ></NTree>
     )
   }

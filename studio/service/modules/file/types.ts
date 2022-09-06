@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+export type { IFileRecord, FileType } from '@/types/file'
 
 export interface IFileContent {
   content: string
