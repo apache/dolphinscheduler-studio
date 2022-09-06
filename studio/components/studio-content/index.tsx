@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { NLayoutContent } from 'naive-ui'
 import { Toolbar } from '../toolbar'
 import { Tabs } from '../tab'
@@ -24,12 +24,18 @@ import styles from './index.module.scss'
 export const StudioContent = defineComponent({
   name: 'studio-content',
   setup() {
+    const logIdRef = ref()
+
+    const showLog = (id: number) => {
+      logIdRef.value = id
+    }
+
     return () => (
       <NLayoutContent class={styles['studio-content']}>
         <div class={styles['editor']}>
-          <Toolbar />
+          <Toolbar onShowLog={showLog} />
           <div class={styles['tab']}>
-            <Tabs />
+            <Tabs runId={logIdRef.value} />
           </div>
         </div>
       </NLayoutContent>

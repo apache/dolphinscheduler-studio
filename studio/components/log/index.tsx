@@ -16,17 +16,24 @@
  */
 
 import { NTabs, NTabPane, NLog } from 'naive-ui'
-import { defineComponent, ref } from 'vue'
+import { defineComponent, PropType } from 'vue'
+
+const props = {
+  value: {
+    type: String as PropType<string>,
+    default: ''
+  }
+}
 
 export const Log = defineComponent({
   name: 'log',
-  setup() {
-    const logRef = ref('')
+  props,
+  setup(props) {
     return () => {
       return (
         <NTabs type='card' closable size='small'>
           <NTabPane name='运行日志'>
-            <NLog log={logRef.value} />
+            <NLog log={props.value} />
           </NTabPane>
         </NTabs>
       )

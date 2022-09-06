@@ -15,19 +15,10 @@
  * limitations under the License.
  */
 
-interface IFile {
-  id: number
-  name: string
-  content: string
-  oldContent?: string
-  saved: boolean
-  log?: string
-}
+import { io, Socket } from 'socket.io-client'
 
-interface IFileState {
-  files: IFile[]
-  fileNames: string[]
-  currentFile: string
+export const createLogSocket = (id: number): Socket => {
+  return io('', {
+    path: '/studio/ws'
+  })
 }
-
-export type { IFile, IFileState }

@@ -41,6 +41,7 @@ export const useFileStore = defineStore({
         this.files.push(file)
         this.fileNames.push(file.name)
       }
+      file.log = ''
       this.currentFile = file.name
     },
     closeFile(fileName: string): void {

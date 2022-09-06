@@ -50,6 +50,11 @@ export default defineConfig({
         target: loadEnv('development', './').VITE_APP_DEV_WEB_URL,
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/studio\/api/, '')
+      },
+      '/studio/ws': {
+        target: loadEnv('development', './').VITE_APP_DEV_WEB_URL,
+        ws: true,
+        rewrite: (path) => path.replace(/^\/studio\/ws/, '/socket.io/')
       }
     }
   },

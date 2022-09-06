@@ -29,7 +29,8 @@ import { runFile, saveFile } from '@/service/modules/file'
 
 export const Toolbar = defineComponent({
   name: 'toolbar',
-  setup() {
+  emits: ['showLog'],
+  setup(props, ctx) {
     const fileStore = useFileStore()
 
     const handleSave = () => {
@@ -44,7 +45,8 @@ export const Toolbar = defineComponent({
         (file) => file.name === fileStore.getCurrentFile
       )[0]
 
-      runFile(file.id)
+      // runFile(file.id)
+      ctx.emit('showLog', file.id)
     }
 
     const openFile = () => {
@@ -61,28 +63,28 @@ export const Toolbar = defineComponent({
     return () => (
       <div class={styles.toolbar}>
         <div class={styles.operate}>
-          <NButton text style={{ fontSize: '24px' }} onClick={openFile}>
+          <NButton text style={{ fontSize: '18px' }} onClick={openFile}>
             <NIcon>
               <FileAddOutlined />
             </NIcon>
           </NButton>
         </div>
         <div class={styles.operate}>
-          <NButton text style={{ fontSize: '24px' }} onClick={handleSave}>
+          <NButton text style={{ fontSize: '18px' }} onClick={handleSave}>
             <NIcon>
               <SaveOutlined />
             </NIcon>
           </NButton>
         </div>
         <div class={styles.operate}>
-          <NButton text style={{ fontSize: '24px' }} onClick={handleRun}>
+          <NButton text style={{ fontSize: '18px' }} onClick={handleRun}>
             <NIcon>
               <PlayCircleOutlined />
             </NIcon>
           </NButton>
         </div>
         <div class={styles.operate}>
-          <NButton text style={{ fontSize: '24px' }}>
+          <NButton text style={{ fontSize: '18px' }}>
             <NIcon>
               <FullscreenOutlined />
             </NIcon>
