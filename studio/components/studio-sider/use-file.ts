@@ -14,19 +14,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { reactive } from 'vue'
-import type { IFileState, FileType } from './types'
+import { reactive, Ref, nextTick } from 'vue'
+import type { IFileState, FileType, IFileRecord } from './types'
 
-export const useFile = () => {
+export const useFile = (inputRef: Ref, fileRef: Ref) => {
   const state = reactive({
     currentKey: 0,
     files: [],
     isCreating: false
   } as IFileState)
 
+  const filesCached = {} as { [key: number]: IFileRecord }
+
+  const freshFiles = () => {
+    fileRef.value.refresh()
+  }
+
+  const getCurrentFolderKey = (): number => {
+    if (state.currentKey === 0) return 0
+    const currentRecord = filesCached[state.currentKey]
+    return currentRecord.type ? currentRecord.pid : currentRecord.key
+  }
+
   const create = async (isFile: boolean, type?: FileType) => {
     if (state.isCreating) return
     state.isCreating = true
+    const currentFolderKey = getCurrentFolderKey()
+    const record = {
+      isCreate: true,
+      key: Date.now(),
+      label: '',
+      pid: currentFolderKey
+    } as IFileRecord
+
+    isFile ? (record.type = type) : (record.children = [])
+
+    filesCached[record.key] = record
+
+    if (currentFolderKey === 0) {
+      state.files.unshift(record)
+    } else {
+      filesCached[currentFolderKey].children.unshift(record)
+    }
+
+    state.currentKey = record.key
+
+    freshFiles()
+    await nextTick()
+    inputRef.value?.focus()
   }
 
   const onCreateFile = (type: FileType) => void create(true, type)
@@ -39,6 +74,23 @@ export const useFile = () => {
 
   const onInputBlur = (value: string) => {
     state.isCreating = false
+    if (!value) {
+      const currentFolderKey = getCurrentFolderKey()
+
+      currentFolderKey
+        ? filesCached[currentFolderKey].children.shift()
+        : state.files.shift()
+
+      delete filesCached[state.currentKey]
+
+      state.currentKey = currentFolderKey
+
+      freshFiles()
+      return
+    }
+    filesCached[state.currentKey].isCreate = false
+    filesCached[state.currentKey].label = value
+    freshFiles()
   }
 
   return { state, onCreateFile, onCreateFolder, onSelectFile, onInputBlur }
