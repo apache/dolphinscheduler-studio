@@ -15,64 +15,36 @@
  * limitations under the License.
  */
 
-import { defineComponent, watch, PropType, reactive } from 'vue'
+import { defineComponent } from 'vue'
 import { NTabPane, NTabs } from 'naive-ui'
 import { MonacoEditor } from '../monaco'
 import utils from '@/utils'
 import { useFileStore } from '@/store/file'
 import { Log } from '../log'
-import { createLogSocket } from '@/service/modules/log'
-import type { Socket } from 'socket.io-client'
-
-const props = {
-  runId: {
-    type: Number as PropType<number>,
-    default: 0
-  }
-}
+import { useWebSocketStore } from '@/store/websocket'
 
 export const Tabs = defineComponent({
   name: 'tabs',
-  props,
-  setup(props) {
-    const socketRef = reactive<{ [key: string]: Socket }>({})
+  setup() {
     const fileStore = useFileStore()
+    const webSocketStore = useWebSocketStore()
 
-    const updateContent = (value: string) => {
+    const updateContent = (value: number) => {
       fileStore.changeTab(value)
     }
 
-    const handleClose = (fileName: string) => {
-      fileStore.closeFile(fileName)
-      socketRef[fileName].close()
+    const handleClose = (fileId: number) => {
+      fileStore.closeFile(fileId)
+      webSocketStore.close(fileId)
     }
 
-    const handleChange = (value: string) => {
+    const handleChange = (value: number) => {
       updateContent(value)
     }
 
-    const getLogContent = (id: number) => {
-      const file = fileStore.getOpenFiles.filter(
-        (file) => file.name === fileStore.getCurrentFile
-      )[0]
-
-      if (!socketRef[file.name]) {
-        socketRef[file.name] = createLogSocket(id)
-      }
-
-      const socket = socketRef[file.name]
-      console.log(file.log)
-      socket.on('log', (data) => (file.log += data))
-    }
-
-    watch(
-      () => props.runId,
-      () => getLogContent(props.runId)
-    )
-
     return () => (
       <NTabs
-        value={fileStore.currentFile}
+        value={fileStore.getCurrentFile.id}
         type='card'
         closable
         tabStyle={{ minWidth: '80px', height: '100%' }}
@@ -83,7 +55,7 @@ export const Tabs = defineComponent({
         {fileStore.getOpenFiles.map((file) => {
           const language = utils.getLanguageByName(file.name)
           return (
-            <NTabPane name={file.name} key={file.name} tab={file.name}>
+            <NTabPane name={file.id} key={file.name} tab={file.name}>
               <MonacoEditor
                 v-model:value={file.content}
                 options={{ language }}

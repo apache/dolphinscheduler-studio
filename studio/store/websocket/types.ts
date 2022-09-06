@@ -15,24 +15,12 @@
  * limitations under the License.
  */
 
-import { defineComponent } from 'vue'
-import { NLayoutContent } from 'naive-ui'
-import { Toolbar } from '../toolbar'
-import { Tabs } from '../tab'
-import styles from './index.module.scss'
+import { Socket } from 'socket.io-client'
 
-export const StudioContent = defineComponent({
-  name: 'studio-content',
-  setup() {
-    return () => (
-      <NLayoutContent class={styles['studio-content']}>
-        <div class={styles['editor']}>
-          <Toolbar />
-          <div class={styles['tab']}>
-            <Tabs />
-          </div>
-        </div>
-      </NLayoutContent>
-    )
+interface IWebSocketState {
+  sockets: {
+    [key: number]: Socket
   }
-})
+}
+
+export type { IWebSocketState }

@@ -15,24 +15,35 @@
  * limitations under the License.
  */
 
-import { defineComponent } from 'vue'
-import { NLayoutContent } from 'naive-ui'
-import { Toolbar } from '../toolbar'
-import { Tabs } from '../tab'
-import styles from './index.module.scss'
+import { createLogSocket } from '@/service/modules/log'
+import { defineStore } from 'pinia'
+import { Socket } from 'socket.io-client'
+import type { IWebSocketState } from './types'
 
-export const StudioContent = defineComponent({
-  name: 'studio-content',
-  setup() {
-    return () => (
-      <NLayoutContent class={styles['studio-content']}>
-        <div class={styles['editor']}>
-          <Toolbar />
-          <div class={styles['tab']}>
-            <Tabs />
-          </div>
-        </div>
-      </NLayoutContent>
-    )
+export const useWebSocketStore = defineStore({
+  id: 'websocket',
+  state: (): IWebSocketState => ({
+    sockets: {}
+  }),
+  persist: true,
+  getters: {
+    getSockets(): Socket[] {
+      return Object.values(this.sockets)
+    }
+  },
+  actions: {
+    open(id: number, key: number): Socket {
+      if (!this.sockets[key]) {
+        this.sockets[key] = createLogSocket(id)
+      }
+      return this.sockets[key]
+    },
+    close(key: number): void {
+      const socket = this.sockets[key]
+      if (socket) {
+        socket.close()
+        delete this.sockets[key]
+      }
+    }
   }
 })

@@ -15,38 +15,49 @@
  * limitations under the License.
  */
 
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { NButton, NIcon } from 'naive-ui'
 import {
   FileAddOutlined,
   FullscreenOutlined,
+  PauseCircleOutlined,
   PlayCircleOutlined,
   SaveOutlined
 } from '@vicons/antd'
 import styles from './index.module.scss'
 import { useFileStore } from '@/store/file'
 import { runFile, saveFile } from '@/service/modules/file'
+import { useWebSocketStore } from '@/store/websocket'
 
 export const Toolbar = defineComponent({
   name: 'toolbar',
-  emits: ['showLog'],
-  setup(props, ctx) {
+  setup() {
     const fileStore = useFileStore()
+    const webSocketStore = useWebSocketStore()
 
     const handleSave = () => {
-      const file = fileStore.getOpenFiles.filter(
-        (file) => file.name === fileStore.getCurrentFile
-      )[0]
+      const file = fileStore.getCurrentFile
       saveFile(file.id, { content: file.content })
     }
 
-    const handleRun = () => {
-      const file = fileStore.getOpenFiles.filter(
-        (file) => file.name === fileStore.getCurrentFile
-      )[0]
+    const runFlag = computed(() => {
+      const file = fileStore.getCurrentFile
+      return file && !!file.flag
+    })
 
+    const handleRun = () => {
+      const file = fileStore.getCurrentFile
       // runFile(file.id)
-      ctx.emit('showLog', file.id)
+      fileStore.run()
+      const socket = webSocketStore.open(1, file.id)
+      socket.on('log', (data) => (file.log += data))
+    }
+
+    const handleStop = () => {
+      const file = fileStore.getCurrentFile
+      webSocketStore.close(file.id)
+      fileStore.stop()
+      // runFile(file.id)
     }
 
     const openFile = () => {
@@ -77,9 +88,13 @@ export const Toolbar = defineComponent({
           </NButton>
         </div>
         <div class={styles.operate}>
-          <NButton text style={{ fontSize: '18px' }} onClick={handleRun}>
+          <NButton
+            text
+            style={{ fontSize: '18px' }}
+            onClick={runFlag.value ? handleStop : handleRun}
+          >
             <NIcon>
-              <PlayCircleOutlined />
+              {runFlag.value ? <PauseCircleOutlined /> : <PlayCircleOutlined />}
             </NIcon>
           </NButton>
         </div>

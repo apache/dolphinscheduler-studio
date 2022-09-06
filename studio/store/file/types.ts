@@ -22,12 +22,12 @@ interface IFile {
   oldContent?: string
   saved: boolean
   log?: string
+  flag?: boolean
 }
 
 interface IFileState {
   files: IFile[]
-  fileNames: string[]
-  currentFile: string
+  currentFileId: number
 }
 
 export type { IFile, IFileState }

@@ -16,44 +16,50 @@
  */
 
 import { defineStore } from 'pinia'
-import { IFile, IFileState } from './types'
+import type { IFile, IFileState } from './types'
 
 export const useFileStore = defineStore({
   id: 'file',
   state: (): IFileState => ({
     files: [],
-    fileNames: [],
-    currentFile: ''
+    currentFileId: -1
   }),
   persist: true,
   getters: {
     getOpenFiles(): IFile[] {
       return this.files
     },
-    getCurrentFile(): string {
-      return this.currentFile
+    getCurrentFile(): IFile {
+      return (
+        this.files.filter((file) => file.id === this.currentFileId)[0] || {}
+      )
     }
   },
   actions: {
     openFile(file: IFile): void {
-      if (!this.fileNames.includes(file.name)) {
+      if (!this.files.filter((item) => item.id === file.id).length) {
         file.oldContent = file.content
-        this.files.push(file)
-        this.fileNames.push(file.name)
+        file.log = ''
+        this.files = [...this.files, file]
       }
-      file.log = ''
-      this.currentFile = file.name
+      this.currentFileId = file.id
     },
-    closeFile(fileName: string): void {
-      const index = this.fileNames.findIndex((name) => name === fileName)
-      this.fileNames = this.fileNames.filter((name) => name !== fileName)
-      this.files = this.files.filter((file) => file.name !== fileName)
+    closeFile(id: number): void {
+      const index = this.files.findIndex((file) => file.id === id)
+      this.files = this.files.filter((file) => file.id !== id)
 
       const nextIndex = index > 0 ? index - 1 : 0
-      this.currentFile = this.fileNames[nextIndex] || ''
+      this.currentFileId = this.files[nextIndex].id || -1
     },
-    changeTab(fileName: string): void {
-      this.currentFile = fileName
+    changeTab(id: number): void {
+      this.currentFileId = id
+    },
+    run() {
+      this.getCurrentFile.log = ''
+      this.getCurrentFile.flag = true
+    },
+    stop() {
+      this.getCurrentFile.flag = false
     }
   }
 })
