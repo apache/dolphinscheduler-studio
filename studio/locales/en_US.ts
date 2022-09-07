@@ -18,7 +18,8 @@
 export const enUS = {
   success: 'Success',
   saved_successfully: 'Saved successfully',
-  same_name_tips: 'Same name exits for files at the same level.'
+  same_name_tips: 'Same name exits for files at the same level.',
+  delete: 'Delete'
 }
 
 export type Locale = typeof enUS

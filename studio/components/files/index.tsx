@@ -15,9 +15,18 @@
  * limitations under the License.
  */
 
-import { defineComponent, PropType, h, VNodeChild, Ref, ref } from 'vue'
-import { NTree, NInput } from 'naive-ui'
+import {
+  defineComponent,
+  PropType,
+  h,
+  VNodeChild,
+  Ref,
+  ref,
+  onMounted
+} from 'vue'
+import { NTree, NInput, NDropdown } from 'naive-ui'
 import { FILE_TYPES_SUFFIX } from '@/constants/file'
+import { useLocale } from '@/hooks'
 import styles from './index.module.scss'
 import type { IFileRecord, TreeOption } from '@/types/file'
 
@@ -37,6 +46,13 @@ export const Files = defineComponent({
   emits: ['select', 'inputBlur'],
   setup(props, { emit, expose }) {
     const keyRef = ref()
+    const treeRef = ref()
+    const xRef = ref(0)
+    const yRef = ref(0)
+    const showDropdownRef = ref(false)
+    const { t } = useLocale()
+
+    let id: any
 
     const onSelect = (keys: string[]) => {
       keys[0] && emit('select', keys[0])
@@ -52,9 +68,13 @@ export const Files = defineComponent({
     expose({ refresh })
 
     const renderLabel = (info: { option: TreeOption }): VNodeChild => {
-      const { isEditing, label, type } = info.option as IFileRecord
+      const { isEditing, name, type, id } = info.option as IFileRecord
       return !isEditing
-        ? `${label}${type ? '.' + FILE_TYPES_SUFFIX[type] : ''}`
+        ? h(
+            'div',
+            { 'data-id': id },
+            `${name}${type ? '.' + FILE_TYPES_SUFFIX[type] : ''}`
+          )
         : h(
             NInput,
             {
@@ -68,20 +88,56 @@ export const Files = defineComponent({
             }
           )
     }
+
+    const onContextMenu = (ev: MouseEvent) => {
+      ev.preventDefault()
+      id = (ev.target as HTMLElement)?.dataset.id
+      if (id) {
+        xRef.value = ev.clientX
+        yRef.value = ev.clientY
+        showDropdownRef.value = true
+      }
+    }
+
+    const onContextMenuSelect = (key: string) => {
+      showDropdownRef.value = false
+    }
+
+    const onClickoutside = () => {
+      showDropdownRef.value = false
+    }
+
+    onMounted(() => {
+      treeRef.value?.selfElRef.addEventListener('contextmenu', onContextMenu)
+    })
+
     return () => (
-      <NTree
-        block-line
-        selectable
-        data={props.data}
-        on-update:selected-keys={onSelect}
-        class={styles['files']}
-        renderLabel={renderLabel}
-        key={keyRef.value}
-        defaultExpandAll
-        expand-on-click
-        labelField='name'
-        keyField='id'
-      ></NTree>
+      <div>
+        <NTree
+          block-line
+          selectable
+          data={props.data}
+          on-update:selected-keys={onSelect}
+          class={styles['files']}
+          renderLabel={renderLabel}
+          key={keyRef.value}
+          defaultExpandAll
+          expand-on-click
+          labelField='name'
+          keyField='id'
+          ref={treeRef}
+        ></NTree>
+        <NDropdown
+          placement='bottom-start'
+          trigger='manual'
+          x={xRef.value}
+          y={yRef.value}
+          options={[{ key: 'delete', label: t('delete') }]}
+          show={showDropdownRef.value}
+          onClickoutside={onClickoutside}
+          onSelect={onContextMenuSelect}
+        />
+      </div>
     )
   }
 })
