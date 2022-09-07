@@ -16,16 +16,18 @@
  */
 
 import { defineComponent } from 'vue'
-import { NBadge, NTabPane, NTabs } from 'naive-ui'
+import { NBadge, NButton, NSpace, NTabPane, NTabs, useDialog } from 'naive-ui'
 import { MonacoEditor } from '../monaco'
 import utils from '@/utils'
 import { useFileStore } from '@/store/file'
 import { Log } from '../log'
 import { useWebSocketStore } from '@/store/websocket'
+import { saveFile } from '@/service/modules/file'
 
 export const Tabs = defineComponent({
   name: 'tabs',
   setup() {
+    const dialog = useDialog()
     const fileStore = useFileStore()
     const webSocketStore = useWebSocketStore()
 
@@ -33,9 +35,43 @@ export const Tabs = defineComponent({
       fileStore.changeTab(value)
     }
 
-    const handleClose = (fileId: number) => {
+    const onClose = (fileId: number) => {
       fileStore.closeFile(fileId)
       webSocketStore.close(fileId)
+    }
+
+    const handleClose = (fileId: number) => {
+      const file = fileStore.getFile(fileId)
+      if (file.content !== file.oldContent) {
+        dialog.warning({
+          title: '关闭提醒',
+          content:
+            '已被修改，尚未保存，若强制关闭将丢失已编辑的内容，关闭标签前是否需要进行保存',
+          action: () => (
+            <NSpace>
+              <NButton
+                onClick={() => {
+                  saveFile(file.id, { content: file.content })
+                  dialog.destroyAll()
+                }}
+              >
+                保存
+              </NButton>
+              <NButton
+                onClick={() => {
+                  onClose(fileId)
+                  dialog.destroyAll()
+                }}
+              >
+                强制关闭
+              </NButton>
+              <NButton onClick={() => dialog.destroyAll()}>取消</NButton>
+            </NSpace>
+          )
+        })
+      } else {
+        onClose(fileId)
+      }
     }
 
     const handleChange = (value: number) => {

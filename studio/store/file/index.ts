@@ -33,6 +33,10 @@ export const useFileStore = defineStore({
       return (
         this.files.filter((file) => file.id === this.currentFileId)[0] || {}
       )
+    },
+    getFile(state): (id: number) => IFile {
+      return (id: number) =>
+        state.files.filter((file) => file.id === id)[0] || {}
     }
   },
   actions: {
@@ -49,7 +53,7 @@ export const useFileStore = defineStore({
       this.files = this.files.filter((file) => file.id !== id)
 
       const nextIndex = index > 0 ? index - 1 : 0
-      this.currentFileId = this.files[nextIndex].id || -1
+      this.currentFileId = this.files.length ? this.files[nextIndex].id : -1
     },
     changeTab(id: number): void {
       this.currentFileId = id

@@ -16,7 +16,7 @@
  */
 
 import { defineComponent } from 'vue'
-import { NLayoutContent } from 'naive-ui'
+import { NDialogProvider, NLayoutContent } from 'naive-ui'
 import { Toolbar } from '../toolbar'
 import { Tabs } from '../tab'
 import styles from './index.module.scss'
@@ -25,14 +25,16 @@ export const StudioContent = defineComponent({
   name: 'studio-content',
   setup() {
     return () => (
-      <NLayoutContent class={styles['studio-content']}>
-        <div class={styles['editor']}>
-          <Toolbar />
-          <div class={styles['tab']}>
-            <Tabs />
+      <NDialogProvider>
+        <NLayoutContent class={styles['studio-content']}>
+          <div class={styles['editor']}>
+            <Toolbar />
+            <div class={styles['tab']}>
+              <Tabs />
+            </div>
           </div>
-        </div>
-      </NLayoutContent>
+        </NLayoutContent>
+      </NDialogProvider>
     )
   }
 })
