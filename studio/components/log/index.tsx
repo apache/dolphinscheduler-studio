@@ -15,8 +15,10 @@
  * limitations under the License.
  */
 
-import { NTabs, NTabPane, NLog } from 'naive-ui'
+import { NTabs, NTabPane, NLog, NConfigProvider } from 'naive-ui'
 import { defineComponent, PropType } from 'vue'
+import hljs from 'highlight.js/lib/core'
+import styles from './index.module.scss'
 
 const props = {
   value: {
@@ -29,11 +31,30 @@ export const Log = defineComponent({
   name: 'log',
   props,
   setup(props) {
+    hljs.registerLanguage('studio-log', () => ({
+      contains: [
+        {
+          scope: 'info',
+          begin: 'INFO'
+        },
+        {
+          scope: 'warning',
+          begin: 'WARNING'
+        },
+        {
+          scope: 'error',
+          begin: 'ERROR'
+        }
+      ]
+    }))
+
     return () => {
       return (
         <NTabs type='card' closable size='small'>
           <NTabPane name='运行日志'>
-            <NLog log={props.value} />
+            <NConfigProvider hljs={hljs} class={styles.hljs}>
+              <NLog log={props.value} language='studio-log' />
+            </NConfigProvider>
           </NTabPane>
         </NTabs>
       )

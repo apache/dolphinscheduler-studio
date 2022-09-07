@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "axios": "^0.27.2",
+    "highlight.js": "^11.6.0",
     "lodash": "^4.17.21",
     "monaco-editor": "^0.34.0",
     "naive-ui": "2.32.0",
