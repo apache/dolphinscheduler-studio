@@ -16,7 +16,7 @@
  */
 
 import { defineComponent } from 'vue'
-import { NTabPane, NTabs } from 'naive-ui'
+import { NBadge, NTabPane, NTabs } from 'naive-ui'
 import { MonacoEditor } from '../monaco'
 import utils from '@/utils'
 import { useFileStore } from '@/store/file'
@@ -55,7 +55,18 @@ export const Tabs = defineComponent({
         {fileStore.getOpenFiles.map((file) => {
           const language = utils.getLanguageByName(file.name)
           return (
-            <NTabPane name={file.id} key={file.name} tab={file.name}>
+            <NTabPane
+              name={file.id}
+              key={file.name}
+              tab={() => (
+                <div>
+                  {file.name}{' '}
+                  {file.oldContent !== file.content && (
+                    <NBadge dot type='warning' />
+                  )}
+                </div>
+              )}
+            >
               <MonacoEditor
                 v-model:value={file.content}
                 options={{ language }}
