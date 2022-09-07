@@ -43,7 +43,7 @@ const props = {
 export const Files = defineComponent({
   name: 'files',
   props,
-  emits: ['select', 'inputBlur'],
+  emits: ['select', 'inputBlur', 'delete'],
   setup(props, { emit, expose }) {
     const keyRef = ref()
     const treeRef = ref()
@@ -101,6 +101,9 @@ export const Files = defineComponent({
 
     const onContextMenuSelect = (key: string) => {
       showDropdownRef.value = false
+      if (key === 'delete') {
+        emit('delete', Number(id))
+      }
     }
 
     const onClickoutside = () => {
