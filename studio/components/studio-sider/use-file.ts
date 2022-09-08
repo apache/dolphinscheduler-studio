@@ -16,7 +16,8 @@
  */
 import { reactive, Ref, nextTick } from 'vue'
 import { useMessage } from 'naive-ui'
-import { addFile } from '@/service/modules/file'
+import { remove } from 'lodash'
+import { addFile, deleteFile } from '@/service/modules/file'
 import { useLocale } from '@/hooks'
 import { sameNameValidator } from './helper'
 import type { IFileState, FileType, IFileRecord } from './types'
@@ -24,14 +25,16 @@ import type { IFileState, FileType, IFileRecord } from './types'
 export const useFile = (inputRef: Ref, fileRef: Ref) => {
   const state = reactive({
     currentKey: 0,
-    files: [{ type: '', id: 1, name: '123', pid: 0 }],
+    files: [{ type: '', id: 1, name: '123', pid: 0, children: [] }],
     isCreating: false
   } as IFileState)
 
   const message = useMessage()
   const { t } = useLocale()
 
-  const filesCached = {} as { [key: number]: IFileRecord }
+  const filesCached = {
+    1: { type: '', id: 1, name: '123', pid: 0, children: [] }
+  } as { [key: number]: IFileRecord }
 
   const freshFiles = () => {
     fileRef.value.refresh()
@@ -130,5 +133,30 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
     }
   }
 
-  return { state, onCreateFile, onCreateFolder, onSelectFile, onInputBlur }
+  const onDelete = async (id: number) => {
+    const deletedRecord = filesCached[id]
+    if (!deletedRecord.type && deletedRecord.children?.length) {
+      message.error(t('delete_tips'))
+      return
+    }
+    await deleteFile(id)
+
+    const children =
+      deletedRecord.pid === 0
+        ? state.files
+        : filesCached[deletedRecord.pid].children || []
+
+    remove(children, (record) => record.id === id)
+
+    delete filesCached[id]
+  }
+
+  return {
+    state,
+    onCreateFile,
+    onCreateFolder,
+    onSelectFile,
+    onInputBlur,
+    onDelete
+  }
 }

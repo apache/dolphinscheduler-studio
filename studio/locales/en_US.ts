@@ -19,7 +19,8 @@ export const enUS = {
   success: 'Success',
   saved_successfully: 'Saved successfully',
   same_name_tips: 'Same name exits for files at the same level.',
-  delete: 'Delete'
+  delete: 'Delete',
+  delete_tips: 'Please delete the files in this folder first.'
 }
 
 export type Locale = typeof enUS
