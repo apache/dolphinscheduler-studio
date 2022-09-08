@@ -30,6 +30,10 @@ export const runFile = (id: number) => {
   return axios.post(`files/${id}/run`)
 }
 
+export const stopFile = (id: number) => {
+  return axios.post(`files/${id}/stop`)
+}
+
 export const getFiles = (): Promise<IFileRecord[]> => axios.get('/files')
 
 export const addFile = (

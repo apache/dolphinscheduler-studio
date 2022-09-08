@@ -26,7 +26,7 @@ import {
 } from '@vicons/antd'
 import styles from './index.module.scss'
 import { useFileStore } from '@/store/file'
-import { runFile, saveFile } from '@/service/modules/file'
+import { runFile, saveFile, stopFile } from '@/service/modules/file'
 import { useWebSocketStore } from '@/store/websocket'
 
 export const Toolbar = defineComponent({
@@ -47,7 +47,7 @@ export const Toolbar = defineComponent({
 
     const handleRun = () => {
       const file = fileStore.getCurrentFile
-      // runFile(file.id)
+      runFile(file.id)
       fileStore.run()
       const socket = webSocketStore.open(1, file.id)
       socket.on('log', (data) => (file.log += data))
@@ -57,7 +57,7 @@ export const Toolbar = defineComponent({
       const file = fileStore.getCurrentFile
       webSocketStore.close(file.id)
       fileStore.stop()
-      // runFile(file.id)
+      stopFile(file.id)
     }
 
     const openFile = () => {
