@@ -20,5 +20,7 @@ export const zhCN = {
   saved_successfully: '保存成功',
   same_name_tips: '同级文件存在相同名字',
   delete: '删除',
-  delete_tips: '请先删除文件夹下的文件'
+  delete_tips: '请先删除文件夹下的文件',
+  empty_name_tips: '请输入名字',
+  rename: '重命名'
 }

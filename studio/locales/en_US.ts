@@ -20,7 +20,9 @@ export const enUS = {
   saved_successfully: 'Saved successfully',
   same_name_tips: 'Same name exits for files at the same level.',
   delete: 'Delete',
-  delete_tips: 'Please delete the files in this folder first.'
+  delete_tips: 'Please delete the files in this folder first.',
+  empty_name_tips: 'Please input the name.',
+  rename: 'Rename'
 }
 
 export type Locale = typeof enUS

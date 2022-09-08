@@ -16,16 +16,16 @@
  */
 import { reactive, Ref, nextTick } from 'vue'
 import { useMessage } from 'naive-ui'
-import { remove } from 'lodash'
 import { addFile, deleteFile } from '@/service/modules/file'
 import { useLocale } from '@/hooks'
+import { remove } from 'lodash'
 import { sameNameValidator } from './helper'
 import type { IFileState, FileType, IFileRecord } from './types'
 
 export const useFile = (inputRef: Ref, fileRef: Ref) => {
   const state = reactive({
     currentKey: 0,
-    files: [{ type: '', id: 1, name: '123', pid: 0, children: [] }],
+    files: [],
     isCreating: false
   } as IFileState)
 
@@ -36,7 +36,7 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
     1: { type: '', id: 1, name: '123', pid: 0, children: [] }
   } as { [key: number]: IFileRecord }
 
-  const freshFiles = () => {
+  const refreshFiles = () => {
     fileRef.value.refresh()
   }
 
@@ -70,7 +70,7 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
 
     state.currentKey = record.id
 
-    freshFiles()
+    refreshFiles()
     await nextTick()
     inputRef.value?.focus()
   }
@@ -90,16 +90,7 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
     }
   }
 
-  const onCreateFile = (type: FileType) => void create(true, type)
-
-  const onCreateFolder = () => void create(false, '')
-
-  const onSelectFile = (key: number) => {
-    state.currentKey = key
-  }
-
-  const onInputBlur = async (value: string) => {
-    state.isCreating = false
+  const add = async (value: string) => {
     if (!value) {
       const currentFolderKey = getCurrentFolderKey()
 
@@ -111,7 +102,7 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
 
       state.currentKey = currentFolderKey
 
-      freshFiles()
+      refreshFiles()
       return
     }
 
@@ -129,8 +120,35 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
     if (result) {
       filesCached[state.currentKey].isEditing = false
       filesCached[state.currentKey].name = value
-      freshFiles()
+      refreshFiles()
     }
+  }
+
+  const rename = async (value: string) => {
+    if (!value) {
+      message.error(t('empty_name_tips'))
+      return
+    }
+    filesCached[state.currentKey].isEditing = false
+    filesCached[state.currentKey].name = value
+    refreshFiles()
+  }
+
+  const onCreateFile = (type: FileType) => void create(true, type)
+
+  const onCreateFolder = () => void create(false, '')
+
+  const onSelectFile = (key: number) => {
+    state.currentKey = key
+  }
+
+  const onInputBlur = async (value: string) => {
+    if (state.isCreating) {
+      state.isCreating = false
+      add(value)
+      return
+    }
+    rename(value)
   }
 
   const onDelete = async (id: number) => {
@@ -151,12 +169,20 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
     delete filesCached[id]
   }
 
+  const onRename = (id: number) => {
+    const currentRecord = filesCached[id]
+    currentRecord.isEditing = true
+    state.currentKey = id
+    refreshFiles()
+  }
+
   return {
     state,
     onCreateFile,
     onCreateFolder,
     onSelectFile,
     onInputBlur,
-    onDelete
+    onDelete,
+    onRename
   }
 }
