@@ -43,7 +43,7 @@ const props = {
 export const Files = defineComponent({
   name: 'files',
   props,
-  emits: ['select', 'inputBlur', 'delete'],
+  emits: ['select', 'inputBlur', 'delete', 'rename'],
   setup(props, { emit, expose }) {
     const keyRef = ref()
     const treeRef = ref()
@@ -99,11 +99,9 @@ export const Files = defineComponent({
       }
     }
 
-    const onContextMenuSelect = (key: string) => {
+    const onContextMenuSelect = (key: 'delete' | 'rename') => {
       showDropdownRef.value = false
-      if (key === 'delete') {
-        emit('delete', Number(id))
-      }
+      emit(key, Number(id))
     }
 
     const onClickoutside = () => {
@@ -135,7 +133,10 @@ export const Files = defineComponent({
           trigger='manual'
           x={xRef.value}
           y={yRef.value}
-          options={[{ key: 'delete', label: t('delete') }]}
+          options={[
+            { key: 'delete', label: t('delete') },
+            { key: 'rename', label: t('rename') }
+          ]}
           show={showDropdownRef.value}
           onClickoutside={onClickoutside}
           onSelect={onContextMenuSelect}
