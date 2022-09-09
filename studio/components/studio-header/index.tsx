@@ -14,19 +14,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { defineComponent } from 'vue'
-import { NLayoutHeader, NGradientText, NSpace } from 'naive-ui'
+import { defineComponent, h } from 'vue'
+import {
+  NLayoutHeader,
+  NGradientText,
+  NSpace,
+  NDropdown,
+  NButton
+} from 'naive-ui'
+import { useLayoutStore } from '@/store/layout'
 import styles from './index.module.scss'
 
 export const StudioHeader = defineComponent({
   name: 'studio-header',
   setup() {
+    const layoutStore = useLayoutStore()
+    const onSelect = (key: string) => {
+      if (key === '1') {
+        layoutStore.toggleSider()
+        return
+      }
+      if (key === '2') {
+        layoutStore.toggleLog()
+        return
+      }
+    }
     return () => (
       <NLayoutHeader class={styles['studio-header']}>
         <NSpace justify='space-between' align='center'>
           <NGradientText type='primary' size={20}>
             DolphinScheduler Studio
           </NGradientText>
+          <NDropdown
+            trigger='click'
+            onSelect={onSelect}
+            options={[
+              {
+                key: '1',
+                label: () => h('div', { class: styles['label-icon-vertical'] })
+              },
+              {
+                key: '2',
+                label: () =>
+                  h('div', { class: styles['label-icon-horizontal'] })
+              }
+            ]}
+          >
+            <NButton quaternary type='primary' class={styles['icon-button']}>
+              <div class={styles['icon-vertical']}></div>
+            </NButton>
+          </NDropdown>
         </NSpace>
       </NLayoutHeader>
     )
