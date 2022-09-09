@@ -37,6 +37,12 @@ export const useLayoutStore = defineStore({
     },
     getEditorHeight(): number {
       return this.editorHeight
+    },
+    getLogMaxHeight(): number {
+      return this.editorHeight - 40 - 40 - 10
+    },
+    getLogMinHeight(): number {
+      return 43
     }
   },
   actions: {
@@ -50,6 +56,12 @@ export const useLayoutStore = defineStore({
     toggleLog() {
       if (this.logHeight) this.prevLogHeight = this.logHeight
       this.logHeight = this.logHeight ? 0 : this.prevLogHeight
+    },
+    toggleLogUpAndDown() {
+      this.logHeight =
+        this.logHeight === this.getLogMinHeight
+          ? this.getLogMaxHeight
+          : this.getLogMinHeight
     },
     setLogHeight(logHeight: number) {
       this.logHeight = logHeight
