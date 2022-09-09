@@ -28,7 +28,7 @@ import type { FileType } from '@/types/file'
 
 export const SearchBar = defineComponent({
   name: 'search-bar',
-  emits: ['fileClick', 'folderClick'],
+  emits: ['fileClick', 'folderClick', 'search'],
   setup(props, { emit }) {
     const typesOptions = FILE_TYPES.map((type) => ({
       key: type,
@@ -40,10 +40,17 @@ export const SearchBar = defineComponent({
     const onFolderClick = () => {
       emit('folderClick')
     }
+    const onChange = (value: string) => {
+      emit('search', value)
+    }
 
     return () => (
       <NSpace size='small' align='center' wrapItem={false} wrap={false}>
-        <NInput size='small' class={styles['search-input']}>
+        <NInput
+          size='small'
+          class={styles['search-input']}
+          onUpdateValue={onChange}
+        >
           {{
             prefix: () => h(NIcon, { component: SearchOutlined })
           }}

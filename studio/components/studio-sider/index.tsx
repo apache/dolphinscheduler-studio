@@ -27,6 +27,7 @@ export const StudioSider = defineComponent({
   setup() {
     const inputRef = ref()
     const fileRef = ref()
+    const searchValueRef = ref()
     const layoutStore = useLayoutStore()
     const {
       state,
@@ -37,6 +38,10 @@ export const StudioSider = defineComponent({
       onDelete,
       onRename
     } = useFile(inputRef, fileRef)
+
+    const onSearch = (value: string) => {
+      searchValueRef.value = value
+    }
 
     const onResized = (resized: ResizedOptions) => {
       let width = resized.x
@@ -58,6 +63,7 @@ export const StudioSider = defineComponent({
           <SearchBar
             onFileClick={onCreateFile}
             onFolderClick={onCreateFolder}
+            onSearch={onSearch}
           />
           <Files
             data={state.files}
@@ -68,6 +74,7 @@ export const StudioSider = defineComponent({
             inputRef={inputRef}
             selected-keys={[state.currentKey]}
             ref={fileRef}
+            searchValueRef={searchValueRef}
           />
         </NSpace>
         <ResizeHandler onResized={onResized} />

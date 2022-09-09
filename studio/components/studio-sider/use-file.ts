@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { reactive, Ref, nextTick } from 'vue'
+import { reactive, Ref, nextTick, onMounted } from 'vue'
 import { useMessage } from 'naive-ui'
-import { addFile, deleteFile } from '@/service/modules/file'
+import { addFile, deleteFile, getFiles } from '@/service/modules/file'
 import { useLocale } from '@/hooks'
 import { remove } from 'lodash'
 import { sameNameValidator } from './helper'
@@ -44,6 +44,11 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
     if (state.currentKey === 0) return 0
     const currentRecord = filesCached[state.currentKey]
     return currentRecord.type ? currentRecord.pid : currentRecord.id
+  }
+
+  const pullFiles = async () => {
+    const files = await getFiles()
+    state.files = files
   }
 
   const create = async (isFile: boolean, type: FileType | '') => {
@@ -175,6 +180,10 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
     state.currentKey = id
     refreshFiles()
   }
+
+  onMounted(() => {
+    pullFiles()
+  })
 
   return {
     state,

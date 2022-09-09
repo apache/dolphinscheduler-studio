@@ -37,6 +37,9 @@ const props = {
   },
   inputRef: {
     type: Object as PropType<Ref>
+  },
+  searchValueRef: {
+    type: Object as PropType<Ref>
   }
 }
 
@@ -127,6 +130,8 @@ export const Files = defineComponent({
           labelField='name'
           keyField='id'
           ref={treeRef}
+          showIrrelevantNodes={false}
+          pattern={props.searchValueRef?.value}
         ></NTree>
         <NDropdown
           placement='bottom-start'
