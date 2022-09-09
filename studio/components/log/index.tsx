@@ -15,8 +15,17 @@
  * limitations under the License.
  */
 
-import { NTabs, NTabPane, NLog, NConfigProvider } from 'naive-ui'
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType, h } from 'vue'
+import {
+  NTabs,
+  NTabPane,
+  NLog,
+  NConfigProvider,
+  NSpace,
+  NIcon,
+  NButton
+} from 'naive-ui'
+import { UpOutlined } from '@vicons/antd'
 import {
   ResizeHandler,
   ResizedOptions,
@@ -33,6 +42,35 @@ const props = {
     default: ''
   }
 }
+
+export const LogToolbar = defineComponent({
+  name: 'log-toolbar',
+  setup() {
+    const layoutStore = useLayoutStore()
+    return () => (
+      <NSpace>
+        <NButton
+          text
+          style={{ fontSize: '16px' }}
+          onClick={layoutStore.toggleLogUpAndDown}
+        >
+          <NIcon
+            style={{
+              transform: `rotate(${
+                layoutStore.getLogHeight === layoutStore.getLogMinHeight
+                  ? 0
+                  : 180
+              }deg)`,
+              transition: '0.3'
+            }}
+          >
+            <UpOutlined />
+          </NIcon>
+        </NButton>
+      </NSpace>
+    )
+  }
+})
 
 export const Log = defineComponent({
   name: 'log',
@@ -61,8 +99,9 @@ export const Log = defineComponent({
 
     const onResized = (resized: ResizedOptions) => {
       let height = layoutStore.editorHeight - resized.y
-      if (height < 40) height = 35
-      if (height > layoutStore.editorHeight) height = layoutStore.editorHeight
+      if (height < 40) height = layoutStore.getLogMinHeight
+      if (height > layoutStore.getLogMaxHeight)
+        height = layoutStore.getLogMaxHeight
       layoutStore.setLogHeight(height)
     }
 
@@ -73,11 +112,30 @@ export const Log = defineComponent({
           style={{ height: `${layoutStore.getLogHeight}px` }}
         >
           <NTabs type='card' closable size='small'>
-            <NTabPane name={t('run_log')}>
-              <NConfigProvider hljs={hljs} class={styles.hljs}>
-                <NLog log={props.value} language='studio-log' />
-              </NConfigProvider>
-            </NTabPane>
+            {{
+              suffix: () => h(LogToolbar),
+              default: () => [
+                h(NTabPane, { name: t('run_log') }, () =>
+                  h(
+                    NConfigProvider,
+                    {
+                      hljs,
+                      class: styles.hljs
+                    },
+                    () =>
+                      h(NLog, {
+                        log: props.value,
+                        language: 'studio-log',
+                        style: {
+                          height:
+                            layoutStore.getLogHeight -
+                            layoutStore.getLogMinHeight
+                        }
+                      })
+                  )
+                )
+              ]
+            }}
           </NTabs>
           <ResizeHandler placement={HandlerPlacement.T} onResized={onResized} />
         </div>

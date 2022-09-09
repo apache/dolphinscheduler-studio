@@ -93,7 +93,7 @@ export const MonacoEditor = defineComponent({
         ref={editorRef}
         style={{
           height: `${
-            layoutStore.getEditorHeight - layoutStore.getLogHeight - 90
+            layoutStore.getEditorHeight - layoutStore.getLogHeight - 40 - 45
           }px`,
           width: '100%',
           border: '1px solid #eee'
