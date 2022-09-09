@@ -19,14 +19,15 @@ import { NLayoutSider, NSpace } from 'naive-ui'
 import { ResizeHandler, ResizedOptions } from '../resize-handler'
 import { SearchBar, Files } from '@/components'
 import { useFile } from './use-file'
+import { useLayoutStore } from '@/store/layout'
 import styles from './index.module.scss'
 
 export const StudioSider = defineComponent({
   name: 'studio-sider',
   setup() {
-    const widthRef = ref(300)
     const inputRef = ref()
     const fileRef = ref()
+    const layoutStore = useLayoutStore()
     const {
       state,
       onCreateFile,
@@ -37,8 +38,18 @@ export const StudioSider = defineComponent({
       onRename
     } = useFile(inputRef, fileRef)
 
+    const onResized = (resized: ResizedOptions) => {
+      let width = resized.x
+      if (width < 100) width = 100
+      if (width > window.innerWidth * 0.5) width = window.innerWidth * 0.5
+      layoutStore.setSiderWidth(width)
+    }
+
     return () => (
-      <NLayoutSider class={styles['studio-sider']} width={widthRef.value}>
+      <NLayoutSider
+        class={styles['studio-sider']}
+        width={layoutStore.getSiderWidth}
+      >
         <NSpace
           vertical
           class={styles['studio-sider-content']}
@@ -59,14 +70,7 @@ export const StudioSider = defineComponent({
             ref={fileRef}
           />
         </NSpace>
-        <ResizeHandler
-          onResized={(resized: ResizedOptions) => {
-            let width = resized.x
-            if (width < 100) width = 100
-            if (width > window.innerWidth * 0.5) width = window.innerWidth * 0.5
-            widthRef.value = width
-          }}
-        />
+        <ResizeHandler onResized={onResized} />
       </NLayoutSider>
     )
   }

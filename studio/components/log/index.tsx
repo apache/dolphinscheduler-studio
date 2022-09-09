@@ -17,6 +17,12 @@
 
 import { NTabs, NTabPane, NLog, NConfigProvider } from 'naive-ui'
 import { defineComponent, PropType } from 'vue'
+import {
+  ResizeHandler,
+  ResizedOptions,
+  HandlerPlacement
+} from '../resize-handler'
+import { useLayoutStore } from '@/store/layout'
 import hljs from 'highlight.js/lib/core'
 import styles from './index.module.scss'
 
@@ -48,15 +54,30 @@ export const Log = defineComponent({
       ]
     }))
 
+    const layoutStore = useLayoutStore()
+
+    const onResized = (resized: ResizedOptions) => {
+      let height = layoutStore.editorHeight - resized.y
+      if (height < 40) height = 35
+      if (height > layoutStore.editorHeight) height = layoutStore.editorHeight
+      layoutStore.setLogHeight(height)
+    }
+
     return () => {
       return (
-        <NTabs type='card' closable size='small'>
-          <NTabPane name='运行日志'>
-            <NConfigProvider hljs={hljs} class={styles.hljs}>
-              <NLog log={props.value} language='studio-log' />
-            </NConfigProvider>
-          </NTabPane>
-        </NTabs>
+        <div
+          class={styles['log-wrap']}
+          style={{ height: `${layoutStore.getLogHeight}px` }}
+        >
+          <NTabs type='card' closable size='small'>
+            <NTabPane name='运行日志'>
+              <NConfigProvider hljs={hljs} class={styles.hljs}>
+                <NLog log={props.value} language='studio-log' />
+              </NConfigProvider>
+            </NTabPane>
+          </NTabs>
+          <ResizeHandler placement={HandlerPlacement.T} onResized={onResized} />
+        </div>
       )
     }
   }

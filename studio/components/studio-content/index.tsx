@@ -15,19 +15,25 @@
  * limitations under the License.
  */
 
-import { defineComponent } from 'vue'
+import { defineComponent, ref, onMounted } from 'vue'
 import { NDialogProvider, NLayoutContent } from 'naive-ui'
 import { Toolbar } from '../toolbar'
 import { Tabs } from '../tab'
+import { useLayoutStore } from '@/store/layout'
 import styles from './index.module.scss'
 
 export const StudioContent = defineComponent({
   name: 'studio-content',
   setup() {
+    const editorRef = ref()
+    const layoutStore = useLayoutStore()
+    onMounted(() => {
+      layoutStore.setEditorHeight(editorRef.value.clientHeight)
+    })
     return () => (
       <NDialogProvider>
         <NLayoutContent class={styles['studio-content']}>
-          <div class={styles['editor']}>
+          <div class={styles['editor']} ref={editorRef}>
             <Toolbar />
             <div class={styles['tab']}>
               <Tabs />

@@ -15,6 +15,21 @@
  * limitations under the License.
  */
 
+@mixin icon() {
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--n-text-color);
+  &::before {
+    content: '';
+    display: block;
+  }
+}
+@mixin label-icon() {
+  @include icon();
+  margin-top: 6px;
+  border: 1px solid var(--n-option-text-color-active);
+}
+
 .studio-header {
   height: 40px;
   line-height: 40px;
@@ -22,4 +37,31 @@
   box-shadow: 0px 0px 2px 2px var(--n-border-color);
   position: relative;
   z-index: 30;
+}
+.icon-button {
+  margin-top: 2px;
+}
+.icon-vertical {
+  @include icon();
+  &::before {
+    width: 6px;
+    height: 18px;
+    background-color: var(--n-text-color);
+  }
+}
+.label-icon-vertical {
+  @include label-icon();
+  &::before {
+    width: 6px;
+    height: 18px;
+    border-right: 1px solid var(--n-option-text-color-active);
+  }
+}
+.label-icon-horizontal {
+  @include label-icon();
+  &::before {
+    width: 18px;
+    height: 12px;
+    border-bottom: 1px solid var(--n-option-text-color-active);
+  }
 }

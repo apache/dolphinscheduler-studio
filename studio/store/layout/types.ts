@@ -15,21 +15,12 @@
  * limitations under the License.
  */
 
-.studio-content {
-  padding: 10px;
+interface ILayoutState {
+  siderWidth: number
+  prevSiderWidth: number
+  logHeight: number
+  prevLogHeight: number
+  editorHeight: number
 }
 
-.editor {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.tab {
-  flex: 1;
-  :global {
-    .n-tabs {
-      height: 100%;
-    }
-  }
-}
+export type { ILayoutState }
