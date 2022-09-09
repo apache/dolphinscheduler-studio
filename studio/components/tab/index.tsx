@@ -23,10 +23,13 @@ import { useFileStore } from '@/store/file'
 import { Log } from '../log'
 import { useWebSocketStore } from '@/store/websocket'
 import { saveFile } from '@/service/modules/file'
+import { useLocale } from '@/hooks'
 
 export const Tabs = defineComponent({
   name: 'tabs',
   setup() {
+    const { t } = useLocale()
+
     const dialog = useDialog()
     const fileStore = useFileStore()
     const webSocketStore = useWebSocketStore()
@@ -44,18 +47,18 @@ export const Tabs = defineComponent({
       const file = fileStore.getFile(fileId)
       if (file.content !== file.oldContent) {
         dialog.warning({
-          title: '关闭提醒',
-          content:
-            '已被修改，尚未保存，若强制关闭将丢失已编辑的内容，关闭标签前是否需要进行保存',
+          title: t('close_tips'),
+          content: t('close_content'),
           action: () => (
             <NSpace>
               <NButton
-                onClick={() => {
+                onClick={async () => {
                   saveFile(file.id, { content: file.content })
+                  fileStore.updateContent(file)
                   dialog.destroyAll()
                 }}
               >
-                保存
+                {t('save')}
               </NButton>
               <NButton
                 onClick={() => {
@@ -63,9 +66,11 @@ export const Tabs = defineComponent({
                   dialog.destroyAll()
                 }}
               >
-                强制关闭
+                {t('force_close')}
               </NButton>
-              <NButton onClick={() => dialog.destroyAll()}>取消</NButton>
+              <NButton onClick={() => dialog.destroyAll()} type='primary'>
+                {t('cannel')}
+              </NButton>
             </NSpace>
           )
         })

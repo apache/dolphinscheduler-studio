@@ -20,7 +20,6 @@ interface IFile {
   name: string
   content: string
   oldContent?: string
-  saved: boolean
   log?: string
   flag?: boolean
 }

@@ -64,6 +64,9 @@ export const useFileStore = defineStore({
     },
     stop() {
       this.getCurrentFile.flag = false
+    },
+    updateContent(file: IFile) {
+      file.oldContent = file.content
     }
   }
 })

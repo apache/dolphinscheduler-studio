@@ -16,7 +16,7 @@
  */
 
 import { computed, defineComponent } from 'vue'
-import { NButton, NIcon } from 'naive-ui'
+import { NButton, NIcon, NTooltip } from 'naive-ui'
 import {
   FileAddOutlined,
   FullscreenOutlined,
@@ -24,20 +24,25 @@ import {
   PlayCircleOutlined,
   SaveOutlined
 } from '@vicons/antd'
+import { useLocale } from '@/hooks'
 import styles from './index.module.scss'
 import { useFileStore } from '@/store/file'
-import { runFile, saveFile, stopFile } from '@/service/modules/file'
+import { addFile, runFile, saveFile, stopFile } from '@/service/modules/file'
 import { useWebSocketStore } from '@/store/websocket'
+import { FileType } from '../studio-sider/types'
 
 export const Toolbar = defineComponent({
   name: 'toolbar',
   setup() {
+    const { t } = useLocale()
+
     const fileStore = useFileStore()
     const webSocketStore = useWebSocketStore()
 
-    const handleSave = () => {
+    const handleSave = async () => {
       const file = fileStore.getCurrentFile
-      saveFile(file.id, { content: file.content })
+      await saveFile(file.id, { content: file.content })
+      fileStore.updateContent(file)
     }
 
     const runFlag = computed(() => {
@@ -60,14 +65,17 @@ export const Toolbar = defineComponent({
       stopFile(file.id)
     }
 
-    const openFile = () => {
+    const openFile = async () => {
       const id = fileStore.getOpenFiles.length + 2
       const name = `name-${id}.py`
+      const data = await addFile(0, {
+        type: 'python' as FileType,
+        name
+      })
       fileStore.openFile({
-        id,
+        id: data.id,
         name,
-        content: '',
-        saved: true
+        content: ''
       })
     }
 
@@ -81,22 +89,40 @@ export const Toolbar = defineComponent({
           </NButton>
         </div>
         <div class={styles.operate}>
-          <NButton text style={{ fontSize: '18px' }} onClick={handleSave}>
-            <NIcon>
-              <SaveOutlined />
-            </NIcon>
-          </NButton>
+          <NTooltip trigger='hover'>
+            {{
+              trigger: () => (
+                <NButton text style={{ fontSize: '18px' }} onClick={handleSave}>
+                  <NIcon>
+                    <SaveOutlined />
+                  </NIcon>
+                </NButton>
+              ),
+              default: () => t('save')
+            }}
+          </NTooltip>
         </div>
         <div class={styles.operate}>
-          <NButton
-            text
-            style={{ fontSize: '18px' }}
-            onClick={runFlag.value ? handleStop : handleRun}
-          >
-            <NIcon>
-              {runFlag.value ? <PauseCircleOutlined /> : <PlayCircleOutlined />}
-            </NIcon>
-          </NButton>
+          <NTooltip trigger='hover'>
+            {{
+              trigger: () => (
+                <NButton
+                  text
+                  style={{ fontSize: '18px' }}
+                  onClick={runFlag.value ? handleStop : handleRun}
+                >
+                  <NIcon>
+                    {runFlag.value ? (
+                      <PauseCircleOutlined />
+                    ) : (
+                      <PlayCircleOutlined />
+                    )}
+                  </NIcon>
+                </NButton>
+              ),
+              default: () => (runFlag.value ? t('stop') : t('run'))
+            }}
+          </NTooltip>
         </div>
         <div class={styles.operate}>
           <NButton text style={{ fontSize: '18px' }}>

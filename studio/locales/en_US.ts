@@ -22,7 +22,16 @@ export const enUS = {
   delete: 'Delete',
   delete_tips: 'Please delete the files in this folder first.',
   empty_name_tips: 'Please input the name.',
-  rename: 'Rename'
+  rename: 'Rename',
+  save: 'Save',
+  run: 'Run',
+  stop: 'Stop',
+  close_tips: 'Close Tips',
+  close_content:
+    'It has been modified and has not been saved. If you force it to close, the edited content will be lost. Do you need to save it before closing the label?',
+  force_close: 'Force close',
+  cannel: 'Cannel',
+  run_log: 'Run Log'
 }
 
 export type Locale = typeof enUS

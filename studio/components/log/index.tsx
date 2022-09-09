@@ -24,6 +24,7 @@ import {
 } from '../resize-handler'
 import { useLayoutStore } from '@/store/layout'
 import hljs from 'highlight.js/lib/core'
+import { useLocale } from '@/hooks'
 import styles from './index.module.scss'
 
 const props = {
@@ -37,6 +38,8 @@ export const Log = defineComponent({
   name: 'log',
   props,
   setup(props) {
+    const { t } = useLocale()
+
     hljs.registerLanguage('studio-log', () => ({
       contains: [
         {
@@ -70,7 +73,7 @@ export const Log = defineComponent({
           style={{ height: `${layoutStore.getLogHeight}px` }}
         >
           <NTabs type='card' closable size='small'>
-            <NTabPane name='运行日志'>
+            <NTabPane name={t('run_log')}>
               <NConfigProvider hljs={hljs} class={styles.hljs}>
                 <NLog log={props.value} language='studio-log' />
               </NConfigProvider>

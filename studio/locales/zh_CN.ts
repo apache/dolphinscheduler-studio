@@ -22,5 +22,14 @@ export const zhCN = {
   delete: '删除',
   delete_tips: '请先删除文件夹下的文件',
   empty_name_tips: '请输入名字',
-  rename: '重命名'
+  rename: '重命名',
+  save: '保存',
+  run: '运行',
+  stop: '停止',
+  close_tips: '关闭提示',
+  close_content:
+    '文件被修改，尚未保存，若强制关闭将丢失已编辑的内容，关闭标签前是否需要进行保存',
+  force_close: '强制关闭',
+  cannel: '取消',
+  run_log: '运行日志'
 }
