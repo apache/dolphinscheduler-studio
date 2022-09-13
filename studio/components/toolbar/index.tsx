@@ -65,29 +65,8 @@ export const Toolbar = defineComponent({
       stopFile(file.id)
     }
 
-    const openFile = async () => {
-      const id = fileStore.getOpenFiles.length + 2
-      const name = `name-${id}.py`
-      const data = await addFile(0, {
-        type: 'python' as FileType,
-        name
-      })
-      fileStore.openFile({
-        id: data.id,
-        name,
-        content: ''
-      })
-    }
-
     return () => (
       <div class={styles.toolbar}>
-        <div class={styles.operate}>
-          <NButton text style={{ fontSize: '18px' }} onClick={openFile}>
-            <NIcon>
-              <FileAddOutlined />
-            </NIcon>
-          </NButton>
-        </div>
         <div class={styles.operate}>
           <NTooltip trigger='hover'>
             {{
