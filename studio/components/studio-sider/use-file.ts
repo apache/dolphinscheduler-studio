@@ -20,6 +20,8 @@ import { addFile, deleteFile, getFiles } from '@/service/modules/file'
 import { useLocale } from '@/hooks'
 import { remove } from 'lodash'
 import { sameNameValidator } from './helper'
+import { useFileStore } from '@/store/file'
+import { getNameByType } from '@/utils/file'
 import type { IFileState, FileType, IFileRecord } from './types'
 
 export const useFile = (inputRef: Ref, fileRef: Ref) => {
@@ -31,10 +33,9 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
 
   const message = useMessage()
   const { t } = useLocale()
+  const fileStore = useFileStore()
 
-  const filesCached = {
-    1: { type: '', id: 1, name: '123', pid: 0, children: [] }
-  } as { [key: number]: IFileRecord }
+  const filesCached = {} as { [key: number]: IFileRecord }
 
   const refreshFiles = () => {
     fileRef.value.refresh()
@@ -49,6 +50,15 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
   const pullFiles = async () => {
     const files = await getFiles()
     state.files = files
+
+    const loop = (list: IFileRecord[]) => {
+      list.forEach((file) => {
+        filesCached[file.id] = file
+        if (file.type) delete file.children
+        if (file.children) loop(file.children)
+      })
+    }
+    loop(files)
   }
 
   const create = async (isFile: boolean, type: FileType | '') => {
@@ -80,15 +90,25 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
     inputRef.value?.focus()
   }
 
-  const save = async () => {
+  const save = async (name: string) => {
     const currentRecord = filesCached[state.currentKey]
     try {
       const { id } = await addFile(currentRecord.pid, {
         type: currentRecord.type || '',
-        name: currentRecord.name
+        name
       })
       message.success(t('saved_successfully'))
       currentRecord.id = id
+      state.currentKey = id
+      delete filesCached[state.currentKey]
+      filesCached[id] = currentRecord
+      if (currentRecord.type) {
+        fileStore.openFile({
+          id,
+          name: getNameByType(currentRecord.type, name),
+          content: ''
+        })
+      }
       return true
     } catch (err) {
       return false
@@ -110,7 +130,6 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
       refreshFiles()
       return
     }
-
     const pid = filesCached[state.currentKey].pid
     const isSame = sameNameValidator(
       value,
@@ -121,7 +140,7 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
       return
     }
 
-    const result = await save()
+    const result = await save(value)
     if (result) {
       filesCached[state.currentKey].isEditing = false
       filesCached[state.currentKey].name = value
