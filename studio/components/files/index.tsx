@@ -22,7 +22,8 @@ import {
   VNodeChild,
   Ref,
   ref,
-  onMounted
+  onMounted,
+  onUnmounted
 } from 'vue'
 import { NTree, NInput, NDropdown } from 'naive-ui'
 import { FILE_TYPES_SUFFIX } from '@/constants/file'
@@ -47,7 +48,7 @@ const props = {
 export const Files = defineComponent({
   name: 'files',
   props,
-  emits: ['select', 'inputBlur', 'delete', 'rename'],
+  emits: ['select', 'inputBlur', 'delete', 'rename', 'doubleClick'],
   setup(props, { emit, expose }) {
     const keyRef = ref()
     const treeRef = ref()
@@ -74,7 +75,7 @@ export const Files = defineComponent({
     const renderLabel = (info: { option: TreeOption }): VNodeChild => {
       const { isEditing, name, type, id } = info.option as IFileRecord
       return !isEditing
-        ? h('div', { 'data-id': id }, type ? getNameByType(type, name) : '')
+        ? h('div', { 'data-id': id }, type ? getNameByType(type, name) : name)
         : h(
             NInput,
             {
@@ -107,9 +108,19 @@ export const Files = defineComponent({
     const onClickoutside = () => {
       showDropdownRef.value = false
     }
+    const onDoubleClick = (ev: MouseEvent) => {
+      id = (ev.target as HTMLElement)?.dataset.id
+      if (id) emit('doubleClick', id)
+    }
 
     onMounted(() => {
       treeRef.value?.selfElRef.addEventListener('contextmenu', onContextMenu)
+      treeRef.value?.selfElRef.addEventListener('dblclick', onDoubleClick)
+    })
+
+    onUnmounted(() => {
+      treeRef.value?.selfElRef.removeEventListener('contextmenu', onContextMenu)
+      treeRef.value?.selfElRef.removeEventListener('dblclick', onDoubleClick)
     })
 
     return () => (

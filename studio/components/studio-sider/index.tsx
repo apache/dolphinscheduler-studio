@@ -36,7 +36,8 @@ export const StudioSider = defineComponent({
       onSelectFile,
       onInputBlur,
       onDelete,
-      onRename
+      onRename,
+      onDoubleClick
     } = useFile(inputRef, fileRef)
 
     const onSearch = (value: string) => {
@@ -71,6 +72,7 @@ export const StudioSider = defineComponent({
             onInputBlur={onInputBlur}
             onDelete={onDelete}
             onRename={onRename}
+            onDoubleClick={onDoubleClick}
             inputRef={inputRef}
             selected-keys={[state.currentKey]}
             ref={fileRef}

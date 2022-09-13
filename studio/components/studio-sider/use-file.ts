@@ -200,6 +200,17 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
     refreshFiles()
   }
 
+  const onDoubleClick = (id: number) => {
+    const currentRecord = filesCached[id]
+    if (!currentRecord.type) return
+    if (currentRecord.isEditing) return
+    fileStore.openFile({
+      id,
+      name: getNameByType(currentRecord.type, currentRecord.name),
+      content: ''
+    })
+  }
+
   onMounted(() => {
     pullFiles()
   })
@@ -211,6 +222,7 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
     onSelectFile,
     onInputBlur,
     onDelete,
-    onRename
+    onRename,
+    onDoubleClick
   }
 }
