@@ -26,6 +26,7 @@ import {
 } from 'vue'
 import { NTree, NInput, NDropdown } from 'naive-ui'
 import { FILE_TYPES_SUFFIX } from '@/constants/file'
+import { getNameByType } from '@/utils/file'
 import { useLocale } from '@/hooks'
 import styles from './index.module.scss'
 import type { IFileRecord, TreeOption } from '@/types/file'
@@ -73,11 +74,7 @@ export const Files = defineComponent({
     const renderLabel = (info: { option: TreeOption }): VNodeChild => {
       const { isEditing, name, type, id } = info.option as IFileRecord
       return !isEditing
-        ? h(
-            'div',
-            { 'data-id': id },
-            `${name}${type ? '.' + FILE_TYPES_SUFFIX[type] : ''}`
-          )
+        ? h('div', { 'data-id': id }, type ? getNameByType(type, name) : '')
         : h(
             NInput,
             {
