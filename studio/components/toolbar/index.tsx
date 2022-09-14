@@ -18,7 +18,6 @@
 import { computed, defineComponent } from 'vue'
 import { NButton, NIcon, NTooltip } from 'naive-ui'
 import {
-  FileAddOutlined,
   FullscreenOutlined,
   PauseCircleOutlined,
   PlayCircleOutlined,
@@ -27,9 +26,9 @@ import {
 import { useLocale } from '@/hooks'
 import styles from './index.module.scss'
 import { useFileStore } from '@/store/file'
-import { addFile, runFile, saveFile, stopFile } from '@/service/modules/file'
+import { useLayoutStore } from '@/store/layout'
+import { runFile, saveFile, stopFile } from '@/service/modules/file'
 import { useWebSocketStore } from '@/store/websocket'
-import { FileType } from '../studio-sider/types'
 
 export const Toolbar = defineComponent({
   name: 'toolbar',
@@ -37,6 +36,7 @@ export const Toolbar = defineComponent({
     const { t } = useLocale()
 
     const fileStore = useFileStore()
+    const layoutStore = useLayoutStore()
     const webSocketStore = useWebSocketStore()
 
     const handleSave = async () => {
@@ -56,6 +56,7 @@ export const Toolbar = defineComponent({
       fileStore.run()
       const socket = webSocketStore.open(1, file.id)
       socket.on('log', (data) => (file.log += data))
+      layoutStore.setLogHeight(400)
     }
 
     const handleStop = () => {
