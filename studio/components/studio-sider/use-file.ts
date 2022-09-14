@@ -18,9 +18,10 @@ import { reactive, Ref, nextTick, onMounted, h } from 'vue'
 import { useMessage, useDialog, NSpace, NButton } from 'naive-ui'
 import { addFile, deleteFile, getFiles } from '@/service/modules/file'
 import { useLocale } from '@/hooks'
-import { constant, remove } from 'lodash'
+import { remove } from 'lodash'
 import { sameNameValidator } from './helper'
 import { useFileStore } from '@/store/file'
+import { useLayoutStore } from '@/store/layout'
 import { getNameByType } from '@/utils/file'
 import type { IFileState, FileType, IFileRecord } from './types'
 
@@ -34,6 +35,7 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
   const message = useMessage()
   const { t } = useLocale()
   const fileStore = useFileStore()
+  const layoutStore = useLayoutStore()
   const dialog = useDialog()
 
   const filesCached = {} as { [key: number]: IFileRecord }
@@ -104,11 +106,7 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
       delete filesCached[state.currentKey]
       filesCached[id] = currentRecord
       if (currentRecord.type) {
-        fileStore.openFile({
-          id,
-          name: getNameByType(currentRecord.type, name),
-          content: ''
-        })
+        openFile(id, currentRecord.type, name)
       }
       return true
     } catch (err) {
@@ -161,6 +159,15 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
     filesCached[state.currentKey].isEditing = false
     filesCached[state.currentKey].name = value
     refreshFiles()
+  }
+
+  const openFile = (id: number, type: FileType, name: string) => {
+    fileStore.openFile({
+      id,
+      name: getNameByType(type, name),
+      content: ''
+    })
+    layoutStore.setLogHeight(0)
   }
 
   const onCreateFile = (type: FileType) => void create(true, type)
@@ -239,11 +246,7 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
     const currentRecord = filesCached[id]
     if (!currentRecord.type) return
     if (currentRecord.isEditing) return
-    fileStore.openFile({
-      id,
-      name: getNameByType(currentRecord.type, currentRecord.name),
-      content: ''
-    })
+    openFile(id, currentRecord.type, currentRecord.name)
   }
 
   onMounted(() => {
