@@ -16,7 +16,7 @@
  */
 
 import { defineComponent } from 'vue'
-import { NLayout } from 'naive-ui'
+import { NLayout, NDialogProvider } from 'naive-ui'
 import { StudioHeader, StudioSider, StudioContent } from './components'
 
 const Studio = defineComponent({
@@ -26,8 +26,10 @@ const Studio = defineComponent({
       <NLayout>
         <StudioHeader />
         <NLayout hasSider>
-          <StudioSider />
-          <StudioContent />
+          <NDialogProvider>
+            <StudioSider />
+            <StudioContent />
+          </NDialogProvider>
         </NLayout>
       </NLayout>
     )

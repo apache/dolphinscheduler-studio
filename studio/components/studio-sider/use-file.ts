@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { reactive, Ref, nextTick, onMounted } from 'vue'
-import { useMessage } from 'naive-ui'
+import { reactive, Ref, nextTick, onMounted, h } from 'vue'
+import { useMessage, useDialog, NSpace, NButton } from 'naive-ui'
 import { addFile, deleteFile, getFiles } from '@/service/modules/file'
 import { useLocale } from '@/hooks'
-import { remove } from 'lodash'
+import { constant, remove } from 'lodash'
 import { sameNameValidator } from './helper'
 import { useFileStore } from '@/store/file'
 import { getNameByType } from '@/utils/file'
@@ -34,6 +34,7 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
   const message = useMessage()
   const { t } = useLocale()
   const fileStore = useFileStore()
+  const dialog = useDialog()
 
   const filesCached = {} as { [key: number]: IFileRecord }
 
@@ -133,18 +134,22 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
     const pid = filesCached[state.currentKey].pid
     const isSame = sameNameValidator(
       value,
-      pid ? filesCached[pid].children || [] : state.files
+      pid ? filesCached[pid].children || [] : state.files,
+      filesCached[state.currentKey].type
     )
     if (isSame) {
       message.error(t('same_name_tips'))
+      inputRef.value?.focus()
       return
     }
-
     const result = await save(value)
     if (result) {
       filesCached[state.currentKey].isEditing = false
       filesCached[state.currentKey].name = value
       refreshFiles()
+      state.isCreating = false
+    } else {
+      inputRef.value?.focus()
     }
   }
 
@@ -168,30 +173,59 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
 
   const onInputBlur = async (value: string) => {
     if (state.isCreating) {
-      state.isCreating = false
       add(value)
       return
     }
     rename(value)
   }
 
-  const onDelete = async (id: number) => {
+  const onDelete = (id: number) => {
     const deletedRecord = filesCached[id]
-    if (!deletedRecord.type && deletedRecord.children?.length) {
-      message.error(t('delete_tips'))
-      return
-    }
-    await deleteFile(id)
+    const deleteDialog = dialog.warning({
+      title: t(
+        'delete_tips',
+        deletedRecord.type
+          ? getNameByType(deletedRecord.type, deletedRecord.name)
+          : deletedRecord.name
+      ),
+      action: () =>
+        h(NSpace, {}, [
+          h(
+            NButton,
+            {
+              onClick: () => {
+                deleteDialog.destroy()
+              }
+            },
+            t('cannel')
+          ),
+          h(
+            NButton,
+            {
+              type: 'primary',
+              onClick: async () => {
+                deleteDialog.destroy()
 
-    const children =
-      deletedRecord.pid === 0
-        ? state.files
-        : filesCached[deletedRecord.pid].children || []
+                await deleteFile(id)
 
-    remove(children, (record) => record.id === id)
+                const children =
+                  deletedRecord.pid === 0
+                    ? state.files
+                    : filesCached[deletedRecord.pid].children || []
 
-    delete filesCached[id]
-    fileStore.closeFile(id)
+                remove(children, (record) => record.id === id)
+
+                delete filesCached[id]
+                state.currentKey = 0
+
+                fileStore.closeFile(id)
+                refreshFiles()
+              }
+            },
+            t('confirm')
+          )
+        ])
+    })
   }
 
   const onRename = (id: number) => {

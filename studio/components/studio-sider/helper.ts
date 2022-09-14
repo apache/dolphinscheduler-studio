@@ -14,11 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { IFileRecord } from './types'
+import type { IFileRecord, FileType } from './types'
 
 export const sameNameValidator = (
   name: string,
-  list: IFileRecord[]
+  list: IFileRecord[],
+  type: FileType | ''
 ): boolean => {
-  return list.some((record) => record.name === name)
+  return list.some((record) => record.name === name && record.type === type)
 }

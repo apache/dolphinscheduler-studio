@@ -20,7 +20,7 @@ export const enUS = {
   saved_successfully: 'Saved successfully',
   same_name_tips: 'Same name exits for files at the same level.',
   delete: 'Delete',
-  delete_tips: 'Please delete the files in this folder first.',
+  delete_tips: 'Are you sure you want to delete {name}?',
   empty_name_tips: 'Please input the name.',
   rename: 'Rename',
   save: 'Save',
@@ -31,6 +31,7 @@ export const enUS = {
     'It has been modified and has not been saved. If you force it to close, the edited content will be lost. Do you need to save it before closing the label?',
   force_close: 'Force close',
   cannel: 'Cannel',
+  confirm: 'Confirm',
   run_log: 'Run Log'
 }
 

@@ -25,8 +25,12 @@ export const useLocale = () => {
       value: enUS
     }
   })
-  const t = (key: keyof Locale): string => {
-    return localeRef.value[key] || key
+  const t = (key: keyof Locale, arg?: string): string => {
+    let str = localeRef.value[key]
+    if (arg) {
+      str = str.replace(/\{[a-z]*\}/, arg)
+    }
+    return str || key
   }
   return { t }
 }

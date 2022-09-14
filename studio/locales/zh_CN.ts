@@ -20,7 +20,7 @@ export const zhCN = {
   saved_successfully: '保存成功',
   same_name_tips: '同级文件存在相同名字',
   delete: '删除',
-  delete_tips: '请先删除文件夹下的文件',
+  delete_tips: '你确定要删除{name}吗？',
   empty_name_tips: '请输入名字',
   rename: '重命名',
   save: '保存',
@@ -31,5 +31,6 @@ export const zhCN = {
     '文件被修改，尚未保存，若强制关闭将丢失已编辑的内容，关闭标签前是否需要进行保存',
   force_close: '强制关闭',
   cannel: '取消',
+  confirm: '确认',
   run_log: '运行日志'
 }
