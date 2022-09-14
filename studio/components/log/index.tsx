@@ -72,7 +72,10 @@ export const Log = defineComponent({
       return (
         <div
           class={styles['log-wrap']}
-          style={{ height: `${layoutStore.getLogHeight}px` }}
+          style={{
+            height: `${layoutStore.getLogHeight}px`,
+            display: layoutStore.getLogHeight ? 'block' : 'none'
+          }}
         >
           <NTabs type='card' closable size='small'>
             {{
