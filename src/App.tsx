@@ -25,6 +25,20 @@ const App = defineComponent({
       <NConfigProvider
         style={{ width: '100vw', height: '100vh' }}
         locale={enUS}
+        theme={null}
+        theme-overrides={{
+          common: {
+            bodyColor: '#f8f8fc',
+            primaryColor: '#1890ff',
+            primaryColorHover: '#40a9ff',
+            primaryColorPressed: '#096dd9',
+            primaryColorSuppl: '#1890ff',
+            infoColor: '#1890ff',
+            successColor: '#52c41a',
+            warningColor: '#faad14',
+            errorColor: '#ff4d4f'
+          }
+        }}
       >
         <NMessageProvider>
           <router-view />
