@@ -16,16 +16,7 @@
  */
 
 import { defineComponent, PropType, h } from 'vue'
-import {
-  NTabs,
-  NTabPane,
-  NLog,
-  NConfigProvider,
-  NSpace,
-  NIcon,
-  NButton
-} from 'naive-ui'
-import { UpOutlined } from '@vicons/antd'
+import { NTabs, NTabPane, NLog, NConfigProvider } from 'naive-ui'
 import {
   ResizeHandler,
   ResizedOptions,
@@ -34,6 +25,7 @@ import {
 import { useLayoutStore } from '@/store/layout'
 import hljs from 'highlight.js/lib/core'
 import { useLocale } from '@/hooks'
+import { LogToolbar } from '../log-toolbar'
 import styles from './index.module.scss'
 
 const props = {
@@ -42,35 +34,6 @@ const props = {
     default: ''
   }
 }
-
-export const LogToolbar = defineComponent({
-  name: 'log-toolbar',
-  setup() {
-    const layoutStore = useLayoutStore()
-    return () => (
-      <NSpace>
-        <NButton
-          text
-          style={{ fontSize: '16px' }}
-          onClick={layoutStore.toggleLogUpAndDown}
-        >
-          <NIcon
-            style={{
-              transform: `rotate(${
-                layoutStore.getLogHeight === layoutStore.getLogMinHeight
-                  ? 0
-                  : 180
-              }deg)`,
-              transition: '0.3'
-            }}
-          >
-            <UpOutlined />
-          </NIcon>
-        </NButton>
-      </NSpace>
-    )
-  }
-})
 
 export const Log = defineComponent({
   name: 'log',
