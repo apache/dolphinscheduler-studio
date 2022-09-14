@@ -16,7 +16,12 @@
  */
 import { reactive, Ref, nextTick, onMounted, h } from 'vue'
 import { useMessage, useDialog, NSpace, NButton } from 'naive-ui'
-import { addFile, deleteFile, getFiles } from '@/service/modules/file'
+import {
+  addFile,
+  deleteFile,
+  getFiles,
+  getFileContent
+} from '@/service/modules/file'
 import { useLocale } from '@/hooks'
 import { remove } from 'lodash'
 import { sameNameValidator } from './helper'
@@ -161,11 +166,16 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
     refreshFiles()
   }
 
-  const openFile = (id: number, type: FileType, name: string) => {
+  const openFile = (
+    id: number,
+    type: FileType,
+    name: string,
+    content?: string
+  ) => {
     fileStore.openFile({
       id,
       name: getNameByType(type, name),
-      content: ''
+      content: content || ''
     })
     layoutStore.setLogHeight(0)
   }
@@ -242,11 +252,12 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
     refreshFiles()
   }
 
-  const onDoubleClick = (id: number) => {
+  const onDoubleClick = async (id: number) => {
     const currentRecord = filesCached[id]
     if (!currentRecord.type) return
     if (currentRecord.isEditing) return
-    openFile(id, currentRecord.type, currentRecord.name)
+    const { content } = await getFileContent(id)
+    openFile(id, currentRecord.type, currentRecord.name, content)
   }
 
   onMounted(() => {

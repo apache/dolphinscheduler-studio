@@ -16,7 +16,7 @@
  */
 
 import { defineComponent, ref, onMounted } from 'vue'
-import { NDialogProvider, NLayoutContent } from 'naive-ui'
+import { NLayoutContent } from 'naive-ui'
 import { Toolbar } from '../toolbar'
 import { Tabs } from '../tab'
 import { useLayoutStore } from '@/store/layout'
@@ -31,16 +31,14 @@ export const StudioContent = defineComponent({
       layoutStore.setEditorHeight(editorRef.value.clientHeight)
     })
     return () => (
-      <NDialogProvider>
-        <NLayoutContent class={styles['studio-content']}>
-          <div class={styles['editor']} ref={editorRef}>
-            <Toolbar />
-            <div class={styles['tab']}>
-              <Tabs />
-            </div>
+      <NLayoutContent class={styles['studio-content']}>
+        <div class={styles['editor']} ref={editorRef}>
+          <Toolbar />
+          <div class={styles['tab']}>
+            <Tabs />
           </div>
-        </NLayoutContent>
-      </NDialogProvider>
+        </div>
+      </NLayoutContent>
     )
   }
 })
