@@ -23,7 +23,8 @@ import {
   Ref,
   ref,
   onMounted,
-  onUnmounted
+  onUnmounted,
+  nextTick
 } from 'vue'
 import { NTree, NInput, NDropdown } from 'naive-ui'
 import { FILE_TYPES_SUFFIX } from '@/constants/file'
@@ -66,12 +67,6 @@ export const Files = defineComponent({
       emit('inputBlur', (ev.target as HTMLInputElement)?.value)
     }
 
-    const refresh = () => {
-      keyRef.value = Date.now()
-    }
-
-    expose({ refresh })
-
     const renderLabel = (info: { option: TreeOption }): VNodeChild => {
       const { isEditing, name, type, id } = info.option as IFileRecord
       return !isEditing
@@ -113,14 +108,30 @@ export const Files = defineComponent({
       if (id) emit('doubleClick', id)
     }
 
-    onMounted(() => {
+    const bindEvents = () => {
       treeRef.value?.selfElRef.addEventListener('contextmenu', onContextMenu)
       treeRef.value?.selfElRef.addEventListener('dblclick', onDoubleClick)
+    }
+
+    const unbindEvents = () => {
+      treeRef.value?.selfElRef.removeEventListener('contextmenu', onContextMenu)
+      treeRef.value?.selfElRef.removeEventListener('dblclick', onDoubleClick)
+    }
+
+    const refresh = async () => {
+      keyRef.value = Date.now()
+      await nextTick()
+      bindEvents()
+    }
+
+    expose({ refresh })
+
+    onMounted(() => {
+      bindEvents()
     })
 
     onUnmounted(() => {
-      treeRef.value?.selfElRef.removeEventListener('contextmenu', onContextMenu)
-      treeRef.value?.selfElRef.removeEventListener('dblclick', onDoubleClick)
+      unbindEvents()
     })
 
     return () => (

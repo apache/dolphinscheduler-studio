@@ -191,6 +191,7 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
     remove(children, (record) => record.id === id)
 
     delete filesCached[id]
+    fileStore.closeFile(id)
   }
 
   const onRename = (id: number) => {
