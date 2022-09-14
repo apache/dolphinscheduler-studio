@@ -26,7 +26,7 @@ import { useLocale } from '@/hooks'
 import { remove } from 'lodash'
 import { sameNameValidator } from './helper'
 import { useFileStore } from '@/store/file'
-import { useLayoutStore } from '@/store/layout'
+import { useLogHeight } from '@/hooks'
 import { getNameByType } from '@/utils/file'
 import type { IFileState, FileType, IFileRecord } from './types'
 
@@ -40,7 +40,7 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
   const message = useMessage()
   const { t } = useLocale()
   const fileStore = useFileStore()
-  const layoutStore = useLayoutStore()
+  const { setLogHeight } = useLogHeight()
   const dialog = useDialog()
 
   const filesCached = {} as { [key: number]: IFileRecord }
@@ -177,7 +177,7 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
       name: getNameByType(type, name),
       content: content || ''
     })
-    layoutStore.setLogHeight(0)
+    setLogHeight(0)
   }
 
   const onCreateFile = (type: FileType) => void create(true, type)

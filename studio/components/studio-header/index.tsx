@@ -22,20 +22,21 @@ import {
   NDropdown,
   NButton
 } from 'naive-ui'
-import { useLayoutStore } from '@/store/layout'
+import { useLogHeight, useSiderWidth } from '@/hooks'
 import styles from './index.module.scss'
 
 export const StudioHeader = defineComponent({
   name: 'studio-header',
   setup() {
-    const layoutStore = useLayoutStore()
+    const { toggleSider } = useSiderWidth()
+    const { toggleLog } = useLogHeight()
     const onSelect = (key: string) => {
       if (key === '1') {
-        layoutStore.toggleSider()
+        toggleSider()
         return
       }
       if (key === '2') {
-        layoutStore.toggleLog()
+        toggleLog()
         return
       }
     }

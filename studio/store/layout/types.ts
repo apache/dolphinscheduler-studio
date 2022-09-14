@@ -21,6 +21,7 @@ interface ILayoutState {
   logHeight: number
   prevLogHeight: number
   editorHeight: number
+  filesLogHeight: { [key: number]: number }
 }
 
 export type { ILayoutState }

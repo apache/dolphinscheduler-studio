@@ -16,3 +16,5 @@
  */
 
 export { useLocale } from './use-locale'
+export { useLogHeight } from './use-log-height'
+export { useSiderWidth } from './use-sider-width'

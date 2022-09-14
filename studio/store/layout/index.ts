@@ -25,7 +25,8 @@ export const useLayoutStore = defineStore({
     prevSiderWidth: 300,
     logHeight: 400,
     prevLogHeight: 400,
-    editorHeight: 0
+    editorHeight: 0,
+    filesLogHeight: {}
   }),
   persist: true,
   getters: {
@@ -43,6 +44,9 @@ export const useLayoutStore = defineStore({
     },
     getLogMinHeight(): number {
       return 43
+    },
+    getPrevLogHeight(): number {
+      return this.prevLogHeight
     }
   },
   actions: {
@@ -57,17 +61,18 @@ export const useLayoutStore = defineStore({
       if (this.logHeight) this.prevLogHeight = this.logHeight
       this.logHeight = this.logHeight ? 0 : this.prevLogHeight
     },
-    toggleLogUpAndDown() {
-      this.logHeight =
-        this.logHeight === this.getLogMinHeight
-          ? this.getLogMaxHeight
-          : this.getLogMinHeight
-    },
-    setLogHeight(logHeight: number) {
-      this.logHeight = logHeight
+    setLogHeightByFileId(id: number) {
+      this.logHeight = this.filesLogHeight[id] || 0
     },
     setEditorHeight(editorHeight: number) {
       this.editorHeight = editorHeight
+    },
+    setFileLogHeight(id: number, logHeight: number) {
+      this.filesLogHeight[id] = logHeight
+      this.logHeight = logHeight
+    },
+    setPrevLogHeight(logHeight: number) {
+      this.prevLogHeight = logHeight
     }
   }
 })

@@ -26,7 +26,7 @@ import {
 import { useLocale } from '@/hooks'
 import styles from './index.module.scss'
 import { useFileStore } from '@/store/file'
-import { useLayoutStore } from '@/store/layout'
+import { useLogHeight } from '@/hooks'
 import { runFile, saveFile, stopFile } from '@/service/modules/file'
 import { useWebSocketStore } from '@/store/websocket'
 
@@ -36,7 +36,7 @@ export const Toolbar = defineComponent({
     const { t } = useLocale()
 
     const fileStore = useFileStore()
-    const layoutStore = useLayoutStore()
+    const { setLogHeight } = useLogHeight()
     const webSocketStore = useWebSocketStore()
 
     const handleSave = async () => {
@@ -56,7 +56,7 @@ export const Toolbar = defineComponent({
       fileStore.run()
       const socket = webSocketStore.open(1, file.id)
       socket.on('log', (data) => (file.log += data))
-      layoutStore.setLogHeight(400)
+      setLogHeight(400)
     }
 
     const handleStop = () => {

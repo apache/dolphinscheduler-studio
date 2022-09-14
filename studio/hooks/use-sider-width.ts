@@ -15,30 +15,20 @@
  * limitations under the License.
  */
 
-import { defineComponent } from 'vue'
-import { NSpace, NIcon, NButton } from 'naive-ui'
-import { UpOutlined } from '@vicons/antd'
-import { useLogHeight } from '@/hooks'
+import { useLayoutStore } from '@/store/layout'
 
-export const LogToolbar = defineComponent({
-  name: 'log-toolbar',
-  setup() {
-    const { toggleLogUpAndDown, getLogHeight, getLogMinHeight } = useLogHeight()
-    return () => (
-      <NSpace>
-        <NButton text style={{ fontSize: '16px' }} onClick={toggleLogUpAndDown}>
-          <NIcon
-            style={{
-              transform: `rotate(${
-                getLogHeight() === getLogMinHeight() ? 0 : 180
-              }deg)`,
-              transition: '0.3'
-            }}
-          >
-            <UpOutlined />
-          </NIcon>
-        </NButton>
-      </NSpace>
-    )
+export function useSiderWidth() {
+  const layoutStore = useLayoutStore()
+
+  const toggleSider = () => layoutStore.toggleSider
+  const getSiderWidth = () => layoutStore.getSiderWidth
+  const setSiderWidth = (siderWidth: number) => {
+    layoutStore.setSiderWidth(siderWidth)
   }
-})
+
+  return {
+    toggleSider,
+    setSiderWidth,
+    getSiderWidth
+  }
+}

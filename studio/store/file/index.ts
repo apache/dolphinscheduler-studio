@@ -34,6 +34,9 @@ export const useFileStore = defineStore({
         this.files.filter((file) => file.id === this.currentFileId)[0] || {}
       )
     },
+    getCurrentFileId(): number {
+      return this.currentFileId
+    },
     getFile(state): (id: number) => IFile {
       return (id: number) =>
         state.files.filter((file) => file.id === id)[0] || {}

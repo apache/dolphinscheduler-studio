@@ -22,7 +22,7 @@ import {
   ResizedOptions,
   HandlerPlacement
 } from '../resize-handler'
-import { useLayoutStore } from '@/store/layout'
+import { useLogHeight } from '@/hooks'
 import hljs from 'highlight.js/lib/core'
 import { useLocale } from '@/hooks'
 import { LogToolbar } from '../log-toolbar'
@@ -40,7 +40,13 @@ export const Log = defineComponent({
   props,
   setup(props) {
     const { t } = useLocale()
-
+    const {
+      setLogHeight,
+      getLogHeight,
+      getLogMaxHeight,
+      getLogMinHeight,
+      getEditorHeight
+    } = useLogHeight()
     hljs.registerLanguage('studio-log', () => ({
       contains: [
         {
@@ -58,14 +64,11 @@ export const Log = defineComponent({
       ]
     }))
 
-    const layoutStore = useLayoutStore()
-
     const onResized = (resized: ResizedOptions) => {
-      let height = layoutStore.editorHeight - resized.y
-      if (height < 40) height = layoutStore.getLogMinHeight
-      if (height > layoutStore.getLogMaxHeight)
-        height = layoutStore.getLogMaxHeight
-      layoutStore.setLogHeight(height)
+      let height = getEditorHeight() - resized.y
+      if (height < 40) height = getLogMinHeight()
+      if (height > getLogMaxHeight()) height = getLogMaxHeight()
+      setLogHeight(height)
     }
 
     return () => {
@@ -73,8 +76,8 @@ export const Log = defineComponent({
         <div
           class={styles['log-wrap']}
           style={{
-            height: `${layoutStore.getLogHeight}px`,
-            display: layoutStore.getLogHeight ? 'block' : 'none'
+            height: `${getLogHeight()}px`,
+            display: getLogHeight() ? 'block' : 'none'
           }}
         >
           <NTabs type='card' closable size='small'>
@@ -93,9 +96,7 @@ export const Log = defineComponent({
                         log: props.value,
                         language: 'studio-log',
                         style: {
-                          height:
-                            layoutStore.getLogHeight -
-                            layoutStore.getLogMinHeight
+                          height: getLogHeight() - getLogMinHeight()
                         }
                       })
                   )

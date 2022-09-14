@@ -23,7 +23,7 @@ import { useFileStore } from '@/store/file'
 import { Log } from '../log'
 import { useWebSocketStore } from '@/store/websocket'
 import { saveFile } from '@/service/modules/file'
-import { useLocale } from '@/hooks'
+import { useLocale, useLogHeight } from '@/hooks'
 
 export const Tabs = defineComponent({
   name: 'tabs',
@@ -32,10 +32,12 @@ export const Tabs = defineComponent({
 
     const dialog = useDialog()
     const fileStore = useFileStore()
+    const { setCurrentLogHeight } = useLogHeight()
     const webSocketStore = useWebSocketStore()
 
     const updateContent = (value: number) => {
       fileStore.changeTab(value)
+      setCurrentLogHeight()
     }
 
     const onClose = (fileId: number) => {
