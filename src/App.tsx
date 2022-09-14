@@ -28,7 +28,6 @@ const App = defineComponent({
         theme={null}
         theme-overrides={{
           common: {
-            bodyColor: '#f8f8fc',
             primaryColor: '#1890ff',
             primaryColorHover: '#40a9ff',
             primaryColorPressed: '#096dd9',
