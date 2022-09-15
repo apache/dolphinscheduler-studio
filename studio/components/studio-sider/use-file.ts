@@ -40,7 +40,7 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
   const message = useMessage()
   const { t } = useLocale()
   const fileStore = useFileStore()
-  const { setLogHeight } = useLogHeight()
+  const { setLogHeight, setCurrentLogHeight } = useLogHeight()
   const dialog = useDialog()
 
   const filesCached = {} as { [key: number]: IFileRecord }
@@ -112,6 +112,7 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
       filesCached[id] = currentRecord
       if (currentRecord.type) {
         openFile(id, currentRecord.type, name)
+        setLogHeight(0)
       }
       return true
     } catch (err) {
@@ -177,7 +178,6 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
       name: getNameByType(type, name),
       content: content || ''
     })
-    setLogHeight(0)
   }
 
   const onCreateFile = (type: FileType) => void create(true, type)
@@ -258,6 +258,7 @@ export const useFile = (inputRef: Ref, fileRef: Ref) => {
     if (currentRecord.isEditing) return
     const { content } = await getFileContent(id)
     openFile(id, currentRecord.type, currentRecord.name, content)
+    setCurrentLogHeight()
   }
 
   onMounted(() => {

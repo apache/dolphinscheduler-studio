@@ -14,19 +14,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ref, onMounted } from 'vue'
 
-import { useLayoutStore } from '@/store/layout'
+export function useLogOpen() {
+  const logRef = ref()
+  let logWindow: Window | null = null
 
-export function useSiderWidth() {
-  const layoutStore = useLayoutStore()
-  const getSiderWidth = () => layoutStore.getSiderWidth
-  const setSiderWidth = (siderWidth: number) => {
-    layoutStore.setSiderWidth(siderWidth)
+  const onMessage = (ev: MessageEvent) => {
+    const { type } = ev.data
+    if (type === 'close') {
+      logWindow?.removeEventListener('message', onMessage)
+      logWindow = null
+    }
   }
 
-  return {
-    toggleSider: layoutStore.toggleSider,
-    setSiderWidth,
-    getSiderWidth
+  const onDragEnd = (ev: DragEvent) => {
+    if (
+      ev.clientX > window.innerWidth - 50 ||
+      ev.clientY > window.innerHeight - 50 ||
+      ev.clientX < 50 ||
+      ev.clientY < 50
+    ) {
+      if (logWindow) {
+        logWindow.focus()
+      } else {
+        logWindow = window.open('/log', '_blank')
+        logWindow?.addEventListener('message', onMessage)
+      }
+    }
   }
+
+  onMounted(() => {
+    logRef.value.addEventListener('dragend', onDragEnd)
+  })
+
+  return { logRef }
 }

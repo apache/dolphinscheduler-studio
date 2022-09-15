@@ -28,7 +28,7 @@ export const StudioContent = defineComponent({
     const editorRef = ref()
     const { setEditorHeight } = useLogHeight()
     onMounted(() => {
-      setEditorHeight(editorRef.value.clientHeight)
+      setEditorHeight(editorRef.value.clientHeight - 1)
     })
     return () => (
       <NLayoutContent class={styles['studio-content']}>

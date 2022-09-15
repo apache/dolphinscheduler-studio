@@ -14,18 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EditorPage } from './editor'
 import { LogPage } from './log'
 
 export default [
   {
-    name: 'studio-editor',
-    path: '/studio/editor',
-    component: EditorPage
-  },
-  {
     name: 'studio-log',
-    path: '/studio/log',
+    path: '/log',
     component: LogPage
   }
 ]
