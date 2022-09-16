@@ -49,6 +49,13 @@ export function useLogHeight() {
     const logHeight = layoutStore.logHeight ? 0 : layoutStore.getPrevLogHeight
     setLogHeight(logHeight)
   }
+  const toggleFloatingLogHeight = (logFloating: boolean) => {
+    if (logFloating) {
+      layoutStore.setLogHeight(0)
+    } else {
+      setCurrentLogHeight()
+    }
+  }
 
   return {
     setLogHeight,
@@ -59,6 +66,7 @@ export function useLogHeight() {
     setCurrentLogHeight,
     toggleLogUpAndDown,
     toggleLog,
-    setEditorHeight
+    setEditorHeight,
+    toggleFloatingLogHeight
   }
 }

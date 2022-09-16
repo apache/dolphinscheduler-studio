@@ -15,16 +15,19 @@
  * limitations under the License.
  */
 import { ref, onMounted } from 'vue'
+import { useLogHeight } from '@/hooks'
 
 export function useLogOpen() {
   const logRef = ref()
   let logWindow: Window | null = null
+  const { toggleFloatingLogHeight } = useLogHeight()
 
   const onMessage = (ev: MessageEvent) => {
     const { type } = ev.data
     if (type === 'close') {
       logWindow?.removeEventListener('message', onMessage)
       logWindow = null
+      toggleFloatingLogHeight(false)
     }
   }
 
@@ -41,6 +44,7 @@ export function useLogOpen() {
         logWindow = window.open('/log', '_blank')
         logWindow?.addEventListener('message', onMessage)
       }
+      toggleFloatingLogHeight(true)
     }
   }
 

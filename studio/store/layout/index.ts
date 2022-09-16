@@ -67,6 +67,9 @@ export const useLayoutStore = defineStore({
     setEditorHeight(editorHeight: number) {
       this.editorHeight = editorHeight
     },
+    setLogHeight(logHeight: number) {
+      this.logHeight = logHeight
+    },
     setFileLogHeight(id: number, logHeight: number) {
       this.filesLogHeight[id] = logHeight
       this.logHeight = logHeight
