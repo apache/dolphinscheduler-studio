@@ -26,6 +26,7 @@ import { useLogHeight } from '@/hooks'
 import hljs from 'highlight.js/lib/core'
 import { useLocale } from '@/hooks'
 import { LogToolbar } from '../log-toolbar'
+import { useLogOpen } from './use-log-open'
 import styles from './index.module.scss'
 
 const props = {
@@ -34,19 +35,19 @@ const props = {
     default: ''
   }
 }
-
-export const Log = defineComponent({
-  name: 'log',
-  props,
+export const LogComponent = defineComponent({
+  name: 'log-component',
+  props: {
+    value: {
+      type: String as PropType<string>,
+      default: ''
+    },
+    height: {
+      type: Number,
+      default: 0
+    }
+  },
   setup(props) {
-    const { t } = useLocale()
-    const {
-      setLogHeight,
-      getLogHeight,
-      getLogMaxHeight,
-      getLogMinHeight,
-      getEditorHeight
-    } = useLogHeight()
     hljs.registerLanguage('studio-log', () => ({
       contains: [
         {
@@ -63,6 +64,38 @@ export const Log = defineComponent({
         }
       ]
     }))
+    return () =>
+      h(
+        NConfigProvider,
+        {
+          hljs,
+          class: styles.hljs
+        },
+        () =>
+          h(NLog, {
+            log: props.value,
+            language: 'studio-log',
+            style: {
+              height: props.height + 'px'
+            }
+          })
+      )
+  }
+})
+
+export const Log = defineComponent({
+  name: 'log',
+  props,
+  setup(props) {
+    const { t } = useLocale()
+    const {
+      setLogHeight,
+      getLogHeight,
+      getLogMaxHeight,
+      getLogMinHeight,
+      getEditorHeight
+    } = useLogHeight()
+    const { logRef } = useLogOpen()
 
     const onResized = (resized: ResizedOptions) => {
       let height = getEditorHeight() - resized.y
@@ -84,22 +117,27 @@ export const Log = defineComponent({
             {{
               suffix: () => h(LogToolbar),
               default: () => [
-                h(NTabPane, { name: t('run_log') }, () =>
-                  h(
-                    NConfigProvider,
-                    {
-                      hljs,
-                      class: styles.hljs
-                    },
-                    () =>
-                      h(NLog, {
-                        log: props.value,
-                        language: 'studio-log',
-                        style: {
-                          height: getLogHeight() - getLogMinHeight()
-                        }
+                h(
+                  NTabPane,
+                  {
+                    name: t('run_log')
+                  },
+                  {
+                    tab: () =>
+                      h(
+                        'div',
+                        {
+                          ref: logRef,
+                          draggable: true
+                        },
+                        t('run_log')
+                      ),
+                    default: () =>
+                      h(LogComponent, {
+                        value: props.value,
+                        height: getLogHeight() - getLogMinHeight()
                       })
-                  )
+                  }
                 )
               ]
             }}

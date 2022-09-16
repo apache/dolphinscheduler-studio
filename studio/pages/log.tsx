@@ -15,11 +15,61 @@
  * limitations under the License.
  */
 
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue'
+import { NTabs, NTabPane, NCard, NIcon, NSpace, NButton } from 'naive-ui'
+import { LogComponent } from '@/components/log'
+import { useLocale } from '@/hooks'
+import { LineOutlined } from '@vicons/antd'
+
+const LogToolbar = defineComponent({
+  name: 'page-log-toolbar',
+  emits: ['close'],
+  setup(props, { emit }) {
+    const onClose = () => {
+      emit('close')
+    }
+    return () => (
+      <NSpace wrapItem={false} style={{ padding: '0px 10px' }}>
+        <NButton text style={{ fontSize: '16px' }} onClick={onClose}>
+          <NIcon>
+            <LineOutlined />
+          </NIcon>
+        </NButton>
+      </NSpace>
+    )
+  }
+})
 
 export const LogPage = defineComponent({
   name: 'log-page',
   setup() {
-    return () => <div>Log - Page</div>
+    const height = window.innerHeight - 85
+    const logValueRef = ref()
+    const { t } = useLocale()
+
+    const onClose = () => {
+      window.postMessage({ type: 'close' })
+      window.close()
+    }
+
+    onMounted(() => {})
+
+    return () => (
+      <NTabs type='card' size='small'>
+        {{
+          suffix: <LogToolbar onClose={onClose} />,
+          default: () => (
+            <NTabPane name={t('run_log')}>
+              <NCard>
+                <LogComponent
+                  v-model:value={logValueRef.value}
+                  height={height}
+                />
+              </NCard>
+            </NTabPane>
+          )
+        }}
+      </NTabs>
+    )
   }
 })
