@@ -26,7 +26,8 @@ export const useLayoutStore = defineStore({
     logHeight: 400,
     prevLogHeight: 400,
     editorHeight: 0,
-    filesLogHeight: {}
+    filesLogHeight: {},
+    isLogFloating: false
   }),
   persist: true,
   getters: {
@@ -47,6 +48,9 @@ export const useLayoutStore = defineStore({
     },
     getPrevLogHeight(): number {
       return this.prevLogHeight
+    },
+    getIsLogFloating(): boolean {
+      return this.isLogFloating
     }
   },
   actions: {
@@ -76,6 +80,9 @@ export const useLayoutStore = defineStore({
     },
     setPrevLogHeight(logHeight: number) {
       this.prevLogHeight = logHeight
+    },
+    setIsLogFloating(logFloating: boolean) {
+      this.isLogFloating = logFloating
     }
   }
 })

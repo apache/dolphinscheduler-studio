@@ -14,21 +14,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useLogHeight } from '@/hooks'
+import { useFileStore } from '@/store/file'
 
 export function useLogOpen() {
   const logRef = ref()
   let logWindow: Window | null = null
   const { toggleFloatingLogHeight } = useLogHeight()
+  const fileStore = useFileStore()
 
   const onMessage = (ev: MessageEvent) => {
     const { type } = ev.data
     if (type === 'close') {
-      logWindow?.removeEventListener('message', onMessage)
-      logWindow = null
-      toggleFloatingLogHeight(false)
+      closeWindow()
     }
+  }
+
+  const openNewWindow = () => {
+    logWindow = window.open(`/log`, '_blank')
+    if (!logWindow) return
+    logWindow.addEventListener('load', () => {
+      postLog(fileStore.getCurrentFile?.log || '')
+    })
+  }
+
+  const postLog = (value: string) => {
+    window.postMessage({
+      type: 'log',
+      data: value
+    })
+  }
+
+  const closeWindow = () => {
+    toggleFloatingLogHeight(false)
+    logWindow = null
   }
 
   const onDragEnd = (ev: DragEvent) => {
@@ -41,15 +61,22 @@ export function useLogOpen() {
       if (logWindow) {
         logWindow.focus()
       } else {
-        logWindow = window.open('/log', '_blank')
-        logWindow?.addEventListener('message', onMessage)
+        openNewWindow()
       }
       toggleFloatingLogHeight(true)
     }
   }
 
+  watch(
+    () => fileStore.getCurrentFile?.log,
+    (value) => {
+      postLog(value || '')
+    }
+  )
+
   onMounted(() => {
     logRef.value.addEventListener('dragend', onDragEnd)
+    window.addEventListener('message', onMessage)
   })
 
   return { logRef }
