@@ -26,12 +26,14 @@ export function useLogHeight() {
     layoutStore.setFileLogHeight(fileStore.getCurrentFileId, height)
   }
   const setCurrentLogHeight = () => {
+    if (layoutStore.getIsLogFloating) return
     layoutStore.setLogHeightByFileId(fileStore.getCurrentFileId)
   }
   const getLogMaxHeight = () => layoutStore.getLogMaxHeight
   const getLogMinHeight = () => layoutStore.getLogMinHeight
   const getLogHeight = () => layoutStore.getLogHeight
   const getEditorHeight = () => layoutStore.getEditorHeight
+  const getIsLogFloating = () => layoutStore.getIsLogFloating
   const setEditorHeight = (height: number) => {
     layoutStore.setEditorHeight(height)
   }
@@ -43,11 +45,20 @@ export function useLogHeight() {
     setLogHeight(logHeight)
   }
   const toggleLog = () => {
+    if (layoutStore.getIsLogFloating) return
     if (layoutStore.logHeight) {
       layoutStore.setPrevLogHeight(layoutStore.logHeight)
     }
     const logHeight = layoutStore.logHeight ? 0 : layoutStore.getPrevLogHeight
     setLogHeight(logHeight)
+  }
+  const toggleFloatingLogHeight = (logFloating: boolean) => {
+    layoutStore.setIsLogFloating(logFloating)
+    if (logFloating) {
+      layoutStore.setLogHeight(0)
+    } else {
+      setCurrentLogHeight()
+    }
   }
 
   return {
@@ -56,9 +67,11 @@ export function useLogHeight() {
     getLogMaxHeight,
     getLogMinHeight,
     getEditorHeight,
+    getIsLogFloating,
     setCurrentLogHeight,
     toggleLogUpAndDown,
     toggleLog,
-    setEditorHeight
+    setEditorHeight,
+    toggleFloatingLogHeight
   }
 }

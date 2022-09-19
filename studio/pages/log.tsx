@@ -48,11 +48,28 @@ export const LogPage = defineComponent({
     const { t } = useLocale()
 
     const onClose = () => {
-      window.postMessage({ type: 'close' })
+      window.opener.postMessage({ type: 'close' })
       window.close()
     }
 
-    onMounted(() => {})
+    let beginTime = 0
+    onMounted(() => {
+      window.opener.addEventListener('message', (ev: MessageEvent) => {
+        const { type, data } = ev.data
+        if (type === 'log') {
+          logValueRef.value = data
+        }
+      })
+      window.addEventListener('beforeunload', () => {
+        beginTime = Date.now()
+      })
+      window.addEventListener('unload', () => {
+        const diffTime = Date.now() - beginTime
+        if (diffTime < 10) {
+          onClose()
+        }
+      })
+    })
 
     return () => (
       <NTabs type='card' size='small'>
