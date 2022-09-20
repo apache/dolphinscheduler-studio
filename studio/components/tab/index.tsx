@@ -18,6 +18,7 @@
 import { defineComponent } from 'vue'
 import { NBadge, NButton, NSpace, NTabPane, NTabs, useDialog } from 'naive-ui'
 import { MonacoEditor } from '../monaco'
+import { Toolbar } from '../toolbar'
 import utils from '@/utils'
 import { useFileStore } from '@/store/file'
 import { Log } from '../log'
@@ -110,6 +111,7 @@ export const Tabs = defineComponent({
                 </div>
               )}
             >
+              <Toolbar />
               <MonacoEditor
                 v-model:value={file.content}
                 options={{ language }}

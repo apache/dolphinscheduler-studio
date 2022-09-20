@@ -17,7 +17,6 @@
 
 import { defineComponent, ref, onMounted } from 'vue'
 import { NLayoutContent } from 'naive-ui'
-import { Toolbar } from '../toolbar'
 import { Tabs } from '../tab'
 import { useLogHeight } from '@/hooks'
 import styles from './index.module.scss'
@@ -33,7 +32,6 @@ export const StudioContent = defineComponent({
     return () => (
       <NLayoutContent class={styles['studio-content']}>
         <div class={styles['editor']} ref={editorRef}>
-          <Toolbar />
           <div class={styles['tab']}>
             <Tabs />
           </div>
