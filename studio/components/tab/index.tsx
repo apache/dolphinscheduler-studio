@@ -25,16 +25,19 @@ import { Log } from '../log'
 import { useWebSocketStore } from '@/store/websocket'
 import { saveFile } from '@/service/modules/file'
 import { useLocale, useLogHeight } from '@/hooks'
+import Fullscreen from './fullscreen'
+import { useFullscreen } from './use-fullscreen'
 
 export const Tabs = defineComponent({
   name: 'tabs',
   setup() {
     const { t } = useLocale()
-
     const dialog = useDialog()
     const fileStore = useFileStore()
-    const { setCurrentLogHeight } = useLogHeight()
+    const { setCurrentLogHeight, getEditorHeight, getLogHeight } =
+      useLogHeight()
     const webSocketStore = useWebSocketStore()
+    const { isFullscreen, toggleFullscreen } = useFullscreen()
 
     const updateContent = (value: number) => {
       fileStore.changeTab(value)
@@ -86,6 +89,10 @@ export const Tabs = defineComponent({
       updateContent(value)
     }
 
+    const handleFullscreen = (id: number) => {
+      toggleFullscreen('file-editor-' + id)
+    }
+
     return () => (
       <NTabs
         value={fileStore.getCurrentFile.id}
@@ -111,11 +118,22 @@ export const Tabs = defineComponent({
                 </div>
               )}
             >
-              <Toolbar />
-              <MonacoEditor
-                v-model:value={file.content}
-                options={{ language }}
-              />
+              <Toolbar onFullscreen={() => void handleFullscreen(file.id)} />
+              <Fullscreen
+                id={'file-editor-' + file.id}
+                isFullscreen={isFullscreen.value}
+                onClose={() => void handleFullscreen(file.id)}
+              >
+                <MonacoEditor
+                  v-model:value={file.content}
+                  options={{ language }}
+                  height={
+                    !isFullscreen.value
+                      ? `${getEditorHeight() - getLogHeight() - 40 - 45}px`
+                      : 'calc(100vh - 70px)'
+                  }
+                />
+              </Fullscreen>
               <Log v-model:value={file.log} />
             </NTabPane>
           )

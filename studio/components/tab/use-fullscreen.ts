@@ -14,26 +14,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ref, onMounted, onUnmounted } from 'vue'
+import screenfull from 'screenfull'
 
-export const enUS = {
-  success: 'Success',
-  saved_successfully: 'Saved successfully',
-  same_name_tips: 'Same name exits for files at the same level.',
-  delete: 'Delete',
-  delete_tips: 'Are you sure you want to delete {name}?',
-  empty_name_tips: 'Please input the name.',
-  rename: 'Rename',
-  save: 'Save',
-  run: 'Run',
-  stop: 'Stop',
-  close_tips: 'Close Tips',
-  close_content:
-    'It has been modified and has not been saved. If you force it to close, the edited content will be lost. Do you need to save it before closing the label?',
-  force_close: 'Force close',
-  cannel: 'Cannel',
-  confirm: 'Confirm',
-  run_log: 'Run Log',
-  close: 'Close'
+export function useFullscreen() {
+  const isFullscreen = ref(false)
+
+  const toggleFullscreen = (idSelector: string) => {
+    const Ele = document.getElementById(idSelector)
+    if (Ele) screenfull.toggle(Ele)
+  }
+
+  onMounted(() => {
+    screenfull.on(
+      'change',
+      () => void (isFullscreen.value = screenfull.isFullscreen)
+    )
+  })
+
+  onUnmounted(() => {
+    screenfull.on(
+      'change',
+      () => void (isFullscreen.value = screenfull.isFullscreen)
+    )
+  })
+
+  return {
+    isFullscreen,
+    toggleFullscreen
+  }
 }
-
-export type Locale = typeof enUS

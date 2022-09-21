@@ -32,7 +32,8 @@ import { useWebSocketStore } from '@/store/websocket'
 
 export const Toolbar = defineComponent({
   name: 'toolbar',
-  setup() {
+  emits: ['fullscreen'],
+  setup(props, { emit }) {
     const { t } = useLocale()
 
     const fileStore = useFileStore()
@@ -64,6 +65,10 @@ export const Toolbar = defineComponent({
       webSocketStore.close(file.id)
       fileStore.stop()
       stopFile(file.id)
+    }
+
+    const handleFullscreen = () => {
+      emit('fullscreen')
     }
 
     return () => (
@@ -105,7 +110,7 @@ export const Toolbar = defineComponent({
           </NTooltip>
         </div>
         <div class={styles.operate}>
-          <NButton text style={{ fontSize: '18px' }}>
+          <NButton text style={{ fontSize: '18px' }} onClick={handleFullscreen}>
             <NIcon>
               <FullscreenOutlined />
             </NIcon>

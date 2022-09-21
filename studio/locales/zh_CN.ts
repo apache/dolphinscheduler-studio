@@ -32,5 +32,6 @@ export const zhCN = {
   force_close: '强制关闭',
   cannel: '取消',
   confirm: '确认',
-  run_log: '运行日志'
+  run_log: '运行日志',
+  close: '关闭'
 }

@@ -19,7 +19,6 @@ import { defineComponent, onMounted, ref, PropType } from 'vue'
 import * as monaco from 'monaco-editor'
 import { useFormItem } from 'naive-ui/es/_mixins'
 import { call } from 'naive-ui/es/_utils'
-import { useLogHeight } from '@/hooks'
 import type {
   MaybeArray,
   OnUpdateValue,
@@ -43,6 +42,9 @@ const props = {
       readOnly: false,
       language: 'shell'
     })
+  },
+  height: {
+    type: String
   }
 }
 
@@ -54,7 +56,6 @@ export const MonacoEditor = defineComponent({
     const editorRef = ref()
     let editor = null as monaco.editor.IStandaloneCodeEditor | null
     const formItem = useFormItem({})
-    const { getEditorHeight, getLogHeight } = useLogHeight()
 
     const initMonacoEditor = () => {
       const dom = editorRef.value
@@ -92,7 +93,7 @@ export const MonacoEditor = defineComponent({
       <div
         ref={editorRef}
         style={{
-          height: `${getEditorHeight() - getLogHeight() - 40 - 45}px`,
+          height: props.height,
           width: '100%',
           border: '1px solid #eee'
         }}
