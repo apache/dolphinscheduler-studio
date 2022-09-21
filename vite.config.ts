@@ -20,7 +20,7 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import viteCompression from 'vite-plugin-compression'
 import dts from 'vite-plugin-dts'
-import path from 'path'
+import path from 'path-browserify'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -41,7 +41,8 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'studio')
+      '@': path.resolve(__dirname, 'studio'),
+      path: 'path-browserify'
     }
   },
   server: {

@@ -19,6 +19,14 @@ import { defineComponent, onMounted, ref, PropType } from 'vue'
 import * as monaco from 'monaco-editor'
 import { useFormItem } from 'naive-ui/es/_mixins'
 import { call } from 'naive-ui/es/_utils'
+import * as rpc from 'vscode-ws-jsonrpc'
+import {
+  MonacoLanguageClient,
+  CloseAction,
+  ErrorAction,
+  MessageTransports
+} from 'monaco-languageclient'
+import normalizeUrl from 'normalize-url'
 import type {
   MaybeArray,
   OnUpdateValue,
@@ -56,6 +64,49 @@ export const MonacoEditor = defineComponent({
     const editorRef = ref()
     let editor = null as monaco.editor.IStandaloneCodeEditor | null
     const formItem = useFormItem({})
+
+    const url = createUrl('localhost', 3001, '/python')
+    const webSocket = new WebSocket(url)
+
+    webSocket.onopen = () => {
+      const socket = rpc.toSocket(webSocket)
+      const reader = new rpc.WebSocketMessageReader(socket)
+      const writer = new rpc.WebSocketMessageWriter(socket)
+      const languageClient = createLanguageClient({
+        reader,
+        writer
+      })
+      languageClient.start()
+      reader.onClose(() => languageClient.stop())
+    }
+
+    function createLanguageClient(
+      transports: MessageTransports
+    ): MonacoLanguageClient {
+      return new MonacoLanguageClient({
+        name: 'Studio Language Client',
+        clientOptions: {
+          // use a language id as a document selector
+          documentSelector: ['python'],
+          // disable the default error handler
+          errorHandler: {
+            error: () => ({ action: ErrorAction.Continue }),
+            closed: () => ({ action: CloseAction.DoNotRestart })
+          }
+        },
+        // create a language client connection from the JSON RPC connection on demand
+        connectionProvider: {
+          get: () => {
+            return Promise.resolve(transports)
+          }
+        }
+      })
+    }
+
+    function createUrl(hostname: string, port: number, path: string): string {
+      const protocol = location.protocol === 'https:' ? 'wss' : 'ws'
+      return normalizeUrl(`${protocol}://${hostname}:${port}${path}`)
+    }
 
     const initMonacoEditor = () => {
       const dom = editorRef.value
