@@ -15,26 +15,7 @@
  * limitations under the License.
  */
 
-import { defineComponent, ref, onMounted } from 'vue'
-import { NLayoutContent } from 'naive-ui'
-import { Tabs } from '../tab'
-import { useLogHeight } from '@/hooks'
-import styles from './index.module.scss'
-
-export const StudioContent = defineComponent({
-  name: 'studio-content',
-  setup() {
-    const editorRef = ref()
-    const { setEditorHeight } = useLogHeight()
-    onMounted(() => {
-      setEditorHeight(editorRef.value.clientHeight - 1)
-    })
-    return () => (
-      <NLayoutContent class={styles['studio-content']}>
-        <div class={styles['editor']} ref={editorRef}>
-          <Tabs />
-        </div>
-      </NLayoutContent>
-    )
-  }
-})
+.empty {
+  height: 100%;
+  justify-content: center;
+}

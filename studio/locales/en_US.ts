@@ -33,7 +33,9 @@ export const enUS = {
   cannel: 'Cannel',
   confirm: 'Confirm',
   run_log: 'Run Log',
-  close: 'Close'
+  close: 'Close',
+  empty_tab_tips:
+    'Please open a file by double clicking on the file name in the file list on the left.'
 }
 
 export type Locale = typeof enUS

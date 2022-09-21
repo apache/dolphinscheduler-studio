@@ -33,5 +33,6 @@ export const zhCN = {
   cannel: '取消',
   confirm: '确认',
   run_log: '运行日志',
-  close: '关闭'
+  close: '关闭',
+  empty_tab_tips: '请双击左侧文件列表中的文件名打开一个文件'
 }

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, onMounted, Ref, ref } from 'vue'
 import { NTabs, NTabPane, NCard, NIcon, NSpace, NButton } from 'naive-ui'
 import { LogComponent } from '@/components/log'
 import { useLocale } from '@/hooks'
@@ -44,7 +44,7 @@ export const LogPage = defineComponent({
   name: 'log-page',
   setup() {
     const height = window.innerHeight - 85
-    const logValueRef = ref()
+    const logValueRef = ref(window.sessionStorage.getItem('log')) as Ref<string>
     const { t } = useLocale()
 
     const onClose = () => {
@@ -60,10 +60,12 @@ export const LogPage = defineComponent({
           logValueRef.value = data
         }
       })
-      window.addEventListener('beforeunload', () => {
+      window.addEventListener('beforeunload', (ev) => {
         beginTime = Date.now()
+        window.sessionStorage.setItem('log', logValueRef.value)
       })
-      window.addEventListener('unload', () => {
+      window.addEventListener('unload', (event) => {
+        console.log('event')
         const diffTime = Date.now() - beginTime
         if (diffTime < 10) {
           onClose()

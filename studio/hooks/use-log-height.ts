@@ -14,26 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import { ref } from 'vue'
 import { useFileStore } from '@/store/file'
 import { useLayoutStore } from '@/store/layout'
 
 export function useLogHeight() {
   const fileStore = useFileStore()
   const layoutStore = useLayoutStore()
+  const isLogFloatingRef = ref(false)
 
   const setLogHeight = (height: number) => {
     layoutStore.setFileLogHeight(fileStore.getCurrentFileId, height)
   }
+  const setFileLogHeight = (id: number, height: number) =>
+    layoutStore.setFileLogHeight(id, height)
   const setCurrentLogHeight = () => {
-    if (layoutStore.getIsLogFloating) return
+    if (isLogFloatingRef.value) return
     layoutStore.setLogHeightByFileId(fileStore.getCurrentFileId)
   }
   const getLogMaxHeight = () => layoutStore.getLogMaxHeight
   const getLogMinHeight = () => layoutStore.getLogMinHeight
   const getLogHeight = () => layoutStore.getLogHeight
   const getEditorHeight = () => layoutStore.getEditorHeight
-  const getIsLogFloating = () => layoutStore.getIsLogFloating
   const setEditorHeight = (height: number) => {
     layoutStore.setEditorHeight(height)
   }
@@ -45,7 +47,7 @@ export function useLogHeight() {
     setLogHeight(logHeight)
   }
   const toggleLog = () => {
-    if (layoutStore.getIsLogFloating) return
+    if (isLogFloatingRef.value) return
     if (layoutStore.logHeight) {
       layoutStore.setPrevLogHeight(layoutStore.logHeight)
     }
@@ -53,7 +55,7 @@ export function useLogHeight() {
     setLogHeight(logHeight)
   }
   const toggleFloatingLogHeight = (logFloating: boolean) => {
-    layoutStore.setIsLogFloating(logFloating)
+    isLogFloatingRef.value = logFloating
     if (logFloating) {
       layoutStore.setLogHeight(0)
     } else {
@@ -63,11 +65,12 @@ export function useLogHeight() {
 
   return {
     setLogHeight,
+    setFileLogHeight,
     getLogHeight,
     getLogMaxHeight,
     getLogMinHeight,
     getEditorHeight,
-    getIsLogFloating,
+    isLogFloatingRef,
     setCurrentLogHeight,
     toggleLogUpAndDown,
     toggleLog,

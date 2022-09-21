@@ -29,7 +29,7 @@ export const StudioHeader = defineComponent({
   name: 'studio-header',
   setup() {
     const { toggleSider } = useSiderWidth()
-    const { toggleLog, getIsLogFloating } = useLogHeight()
+    const { toggleLog } = useLogHeight()
     const onSelect = (key: string) => {
       if (key === '1') {
         toggleSider()
@@ -56,7 +56,6 @@ export const StudioHeader = defineComponent({
               },
               {
                 key: '2',
-                disabled: getIsLogFloating(),
                 label: () =>
                   h('div', {
                     class: styles['label-icon-horizontal']

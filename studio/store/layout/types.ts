@@ -22,7 +22,6 @@ interface ILayoutState {
   prevLogHeight: number
   editorHeight: number
   filesLogHeight: { [key: number]: number }
-  isLogFloating: boolean
 }
 
 export type { ILayoutState }

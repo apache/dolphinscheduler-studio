@@ -105,7 +105,7 @@ export const Files = defineComponent({
     }
     const onDoubleClick = (ev: MouseEvent) => {
       id = (ev.target as HTMLElement)?.dataset.id
-      if (id) emit('doubleClick', id)
+      if (id) emit('doubleClick', Number(id))
     }
 
     const bindEvents = () => {

@@ -15,26 +15,19 @@
  * limitations under the License.
  */
 
-import { defineComponent, ref, onMounted } from 'vue'
-import { NLayoutContent } from 'naive-ui'
-import { Tabs } from '../tab'
-import { useLogHeight } from '@/hooks'
+import { defineComponent } from 'vue'
+import { NEmpty } from 'naive-ui'
+import { useLocale } from '@/hooks'
 import styles from './index.module.scss'
 
-export const StudioContent = defineComponent({
-  name: 'studio-content',
+const Empty = defineComponent({
+  name: 'tab-empty',
   setup() {
-    const editorRef = ref()
-    const { setEditorHeight } = useLogHeight()
-    onMounted(() => {
-      setEditorHeight(editorRef.value.clientHeight - 1)
-    })
+    const { t } = useLocale()
     return () => (
-      <NLayoutContent class={styles['studio-content']}>
-        <div class={styles['editor']} ref={editorRef}>
-          <Tabs />
-        </div>
-      </NLayoutContent>
+      <NEmpty class={styles['empty']} description={t('empty_tab_tips')} />
     )
   }
 })
+
+export default Empty

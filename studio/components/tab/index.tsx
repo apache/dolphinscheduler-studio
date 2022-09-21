@@ -27,6 +27,7 @@ import { saveFile } from '@/service/modules/file'
 import { useLocale, useLogHeight } from '@/hooks'
 import Fullscreen from './fullscreen'
 import { useFullscreen } from './use-fullscreen'
+import Empty from './empty'
 
 export const Tabs = defineComponent({
   name: 'tabs',
@@ -34,8 +35,12 @@ export const Tabs = defineComponent({
     const { t } = useLocale()
     const dialog = useDialog()
     const fileStore = useFileStore()
-    const { setCurrentLogHeight, getEditorHeight, getLogHeight } =
-      useLogHeight()
+    const {
+      setCurrentLogHeight,
+      getEditorHeight,
+      getLogHeight,
+      setFileLogHeight
+    } = useLogHeight()
     const webSocketStore = useWebSocketStore()
     const { isFullscreen, toggleFullscreen } = useFullscreen()
 
@@ -47,6 +52,7 @@ export const Tabs = defineComponent({
     const onClose = (fileId: number) => {
       fileStore.closeFile(fileId)
       webSocketStore.close(fileId)
+      setFileLogHeight(fileId, 0)
     }
 
     const handleClose = (fileId: number) => {
@@ -93,52 +99,55 @@ export const Tabs = defineComponent({
       toggleFullscreen('file-editor-' + id)
     }
 
-    return () => (
-      <NTabs
-        value={fileStore.getCurrentFile.id}
-        type='card'
-        closable
-        tabStyle={{ minWidth: '80px', height: '100%' }}
-        size='small'
-        onClose={handleClose}
-        on-update:value={handleChange}
-      >
-        {fileStore.getOpenFiles.map((file) => {
-          const language = utils.getLanguageByName(file.name)
-          return (
-            <NTabPane
-              name={file.id}
-              key={file.name}
-              tab={() => (
-                <div>
-                  {file.name}{' '}
-                  {file.oldContent !== file.content && (
-                    <NBadge dot type='warning' />
-                  )}
-                </div>
-              )}
-            >
-              <Toolbar onFullscreen={() => void handleFullscreen(file.id)} />
-              <Fullscreen
-                id={'file-editor-' + file.id}
-                isFullscreen={isFullscreen.value}
-                onClose={() => void handleFullscreen(file.id)}
+    return () =>
+      !!fileStore.getOpenFiles.length ? (
+        <NTabs
+          value={fileStore.getCurrentFile.id}
+          type='card'
+          closable
+          tabStyle={{ minWidth: '80px', height: '100%' }}
+          size='small'
+          onClose={handleClose}
+          on-update:value={handleChange}
+        >
+          {fileStore.getOpenFiles.map((file) => {
+            const language = utils.getLanguageByName(file.name)
+            return (
+              <NTabPane
+                name={file.id}
+                key={file.name}
+                tab={() => (
+                  <div>
+                    {file.name}{' '}
+                    {file.oldContent !== file.content && (
+                      <NBadge dot type='warning' />
+                    )}
+                  </div>
+                )}
               >
-                <MonacoEditor
-                  v-model:value={file.content}
-                  options={{ language }}
-                  height={
-                    !isFullscreen.value
-                      ? `${getEditorHeight() - getLogHeight() - 40 - 45}px`
-                      : 'calc(100vh - 70px)'
-                  }
-                />
-              </Fullscreen>
-              <Log v-model:value={file.log} />
-            </NTabPane>
-          )
-        })}
-      </NTabs>
-    )
+                <Toolbar onFullscreen={() => void handleFullscreen(file.id)} />
+                <Fullscreen
+                  id={'file-editor-' + file.id}
+                  isFullscreen={isFullscreen.value}
+                  onClose={() => void handleFullscreen(file.id)}
+                >
+                  <MonacoEditor
+                    v-model:value={file.content}
+                    options={{ language }}
+                    height={
+                      !isFullscreen.value
+                        ? `${getEditorHeight() - getLogHeight() - 40 - 45}px`
+                        : 'calc(100vh - 70px)'
+                    }
+                  />
+                </Fullscreen>
+                <Log v-model:value={file.log} />
+              </NTabPane>
+            )
+          })}
+        </NTabs>
+      ) : (
+        <Empty />
+      )
   }
 })
