@@ -1,0 +1,5 @@
+lowercaseKeywords: false
+connections:
+  - alias: mysql
+    driver: mysql
+    dataSourceName: root:root@tcp(127.0.0.1:3306)/demo

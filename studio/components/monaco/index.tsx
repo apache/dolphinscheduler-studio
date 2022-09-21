@@ -65,7 +65,7 @@ export const MonacoEditor = defineComponent({
     let editor = null as monaco.editor.IStandaloneCodeEditor | null
     const formItem = useFormItem({})
 
-    const url = createUrl('localhost', 3001, '/python')
+    const url = createUrl('localhost', 3001, `/${props.options.language}`)
     const webSocket = new WebSocket(url)
 
     webSocket.onopen = () => {
@@ -87,7 +87,7 @@ export const MonacoEditor = defineComponent({
         name: 'Studio Language Client',
         clientOptions: {
           // use a language id as a document selector
-          documentSelector: ['python'],
+          documentSelector: ['python', 'sql'],
           // disable the default error handler
           errorHandler: {
             error: () => ({ action: ErrorAction.Continue }),

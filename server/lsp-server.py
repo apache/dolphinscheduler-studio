@@ -20,21 +20,16 @@ from pyls_jsonrpc import streams
 from tornado import ioloop, process, websocket, web
 
 
-class PythonWebSocketHandler(websocket.WebSocketHandler):
+class LanguageWebSocketHandler(websocket.WebSocketHandler):
     writer = None
+    proc = None
 
     def open(self, *args: str, **kwargs: str):
-        proc = process.Subprocess(
-            ['pylsp','-v'],
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE
-        )
-
-        self.writer = streams.JsonRpcStreamWriter(proc.stdin)
+        self.writer = streams.JsonRpcStreamWriter(self.proc.stdin)
 
         def consume():
             ioloop.IOLoop()
-            reader = streams.JsonRpcStreamReader(proc.stdout)
+            reader = streams.JsonRpcStreamReader(self.proc.stdout)
             reader.listen(lambda msg: self.write_message(json.dumps(msg)))
         
         thread = threading.Thread(target=consume)
@@ -47,9 +42,27 @@ class PythonWebSocketHandler(websocket.WebSocketHandler):
     def check_origin(self, origin):
         return True
 
+
+class PythonWebSocketHandler(LanguageWebSocketHandler):
+    proc = process.Subprocess(
+        ['pylsp','-v'],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE
+    )
+
+
+class SQLWebSocketHandler(LanguageWebSocketHandler):
+    proc = process.Subprocess(
+        ['sqls', '-c', './sql.yml'],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE
+    )
+
+
 if __name__ == "__main__":
     app = web.Application([
         (r"/python", PythonWebSocketHandler),
+        (r"/sql", SQLWebSocketHandler)
     ])
     app.listen(3001)
     ioloop.IOLoop.current().start()
