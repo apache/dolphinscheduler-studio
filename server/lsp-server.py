@@ -59,10 +59,19 @@ class SQLWebSocketHandler(LanguageWebSocketHandler):
     )
 
 
+class ShellWebSocketHandler(LanguageWebSocketHandler):
+    proc = process.Subprocess(
+        ['bash-language-server', 'start'],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE
+    )
+
+
 if __name__ == "__main__":
     app = web.Application([
         (r"/python", PythonWebSocketHandler),
-        (r"/sql", SQLWebSocketHandler)
+        (r"/sql", SQLWebSocketHandler),
+        (r"/shell", ShellWebSocketHandler)
     ])
     app.listen(3001)
     ioloop.IOLoop.current().start()

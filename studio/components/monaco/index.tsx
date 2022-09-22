@@ -87,7 +87,7 @@ export const MonacoEditor = defineComponent({
         name: 'Studio Language Client',
         clientOptions: {
           // use a language id as a document selector
-          documentSelector: ['python', 'sql'],
+          documentSelector: ['python', 'sql', 'shell'],
           // disable the default error handler
           errorHandler: {
             error: () => ({ action: ErrorAction.Continue }),
