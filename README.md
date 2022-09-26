@@ -49,6 +49,7 @@ The connection to the RDBMS is essential to take advantage of the functionality 
 
 ## Configuration Methods
 
+Change the configuration to your `server/sql.yml`
 
 ```
 lowercaseKeywords: false
@@ -61,4 +62,12 @@ connections:
     host: 127.0.0.1
     port: 13306
     dbName: world
+```
+
+## Start LSP Server
+
+Open `server` directory and run command
+
+```
+python lsp-server.py
 ```
